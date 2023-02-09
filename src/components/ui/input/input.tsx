@@ -5,6 +5,7 @@ interface InputProps extends React.HTMLProps<HTMLInputElement> {
   placeholder?: string;
   extraClass?: string;
   isLimitText?: boolean;
+  onChange?: any;
 }
 
 export const Input: React.FC<InputProps> = ({
