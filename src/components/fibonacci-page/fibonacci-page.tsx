@@ -1,52 +1,41 @@
-import React, {FC, useEffect, useRef, MouseEvent} from "react";
+import React, {FC, FormEvent} from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import stylesStringPage from "../string/string.module.css";
+import stylesFiboPage from "./fibonacci-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {useForm} from "../../Utils/Hooks/useForm";
+import {getNumbers} from "../../Utils/FibbonacciUtils";
+import {SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {delay} from "../../Utils/Delay";
+import {Circle} from "../ui/circle/circle";
 
-import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+
 
 
 export const FibonacciPage: FC = () => {
-    const {values, handleChange, setValues} = useForm({inputValue: null, arr: [], loader: false});
+    const {values, setValues} = useForm({inputValue: '', fibArr: [], loader: false});
 
-    const ref = useRef<ReturnType<typeof setTimeout> | undefined>();
+    const onChange = (e: FormEvent<HTMLInputElement>): void => {
+        const number = e.currentTarget.value
+        setValues({inputValue: number})
+    };
 
-    useEffect(() => {
-        return () => {
-            ref.current && clearTimeout(ref.current)
-        }
-    }, []);
-
-    useEffect(() => {
-        if (values.inputValue) {
-            if(values.inputValue) {
-                    ref.current = setTimeout(() => {
-                        setValues((arr: any) => [...arr, 1]);
-                    }, SHORT_DELAY_IN_MS)
-                } else {
-                    ref.current = setTimeout(() => {
-                        setValues((arr: any) => [...arr, arr[arr.length -1] + arr[arr.length - 2]])
-                    }, SHORT_DELAY_IN_MS)
-                }
-            }
-
-    }, [values.arr.length, values.loader])
-
-    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-        if (values.inputValue) {
-            if (values.inputValue > 19) {
-                console.log('to many symbols')
-                setValues({inputValue: 0})
-                return;
-            }
-        }
+    const getArr = async (value: number) => {
         setValues({loader: true})
+        const arr = getNumbers(value)
+        for (let i = 0; i <= arr.length; i++) {
+            await delay(SHORT_DELAY_IN_MS)
+            setValues({arr: arr.slice(0, i + 1)})
+        }
+        setValues({loader: false})
     }
 
-    console.log(values)
-
+    const handleClick = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        console.log(values)
+        getArr(Number(values.inputValue)).then()
+            setValues({inputValue: ''})
+    }
 
 
 
@@ -56,7 +45,8 @@ export const FibonacciPage: FC = () => {
 
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
-      <div className={`${stylesStringPage.container}`}>
+      <form className={`${stylesFiboPage.container}`} onSubmit={handleClick}>
+          <div className={`${stylesFiboPage.input}`}>
         <Input
             placeholder={'Введите текст'}
             extraClass={'input-style'}
@@ -64,13 +54,20 @@ export const FibonacciPage: FC = () => {
             maxLength={11}
             type={'num'}
             max={19}
-            onChange={handleChange}/>
+            onChange={onChange}/>
         <Button text={'Рассчитать'}
                 extraClass={'button-style'}
                 onClick={handleClick}
-
         />
-      </div>
+          </div>
+          <ul className={`${stylesFiboPage.ul}`}>
+              {values.arr && values.arr.map((item: number, index: number) => {
+                  return (
+                      <Circle letter={`${item}`} key={index}/>
+                  )
+              })}
+          </ul>
+      </form>
     </SolutionLayout>
   );
 };

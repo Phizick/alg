@@ -1,6 +1,19 @@
 .container {
     display: flex;
     margin: 0 auto;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.ul {
+    display: flex;
+    flex-direction: row;
+}
+
+.input {
+    display: flex;
+    margin: 0 auto;
     flex-direction: row;
     max-width: 512px;
     gap: 12px;
