@@ -1,4 +1,4 @@
-import React, {  FC } from "react";
+import React, {FC, useEffect, useRef, MouseEvent} from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import stylesStringPage from "../string/string.module.css";
 import {Input} from "../ui/input/input";
@@ -9,38 +9,49 @@ import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 
 export const FibonacciPage: FC = () => {
-    const {values, handleChange, setValues} = useForm({inputValue: '', arr: [], loader: false});
+    const {values, handleChange, setValues} = useForm({inputValue: null, arr: [], loader: false});
 
-    const delay = (ms: number) => {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    };
+    const ref = useRef<ReturnType<typeof setTimeout> | undefined>();
 
-    const fibonacciSequence = (n: number): number[] => {
-        let arr: number[] = [1,1];
-        for (let i = 2; i < n + 1; i++) {
-            arr.push(arr[i - 2] + arr[i - 1]);
+    useEffect(() => {
+        return () => {
+            ref.current && clearTimeout(ref.current)
         }
-        return arr;
-    };
+    }, []);
 
+    useEffect(() => {
+        if (values.inputValue) {
+            if(values.inputValue) {
+                    ref.current = setTimeout(() => {
+                        setValues((arr: any) => [...arr, 1]);
+                    }, SHORT_DELAY_IN_MS)
+                } else {
+                    ref.current = setTimeout(() => {
+                        setValues((arr: any) => [...arr, arr[arr.length -1] + arr[arr.length - 2]])
+                    }, SHORT_DELAY_IN_MS)
+                }
+            }
 
-    // useEffect зайдет получше V
+    }, [values.arr.length, values.loader])
 
-    const showCurrentSequence = async (inputValue: string) => {
-        setValues({loader: true});
-        await delay(SHORT_DELAY_IN_MS);
-        const array = fibonacciSequence(Number(inputValue));
-        for (let i = 0; i <= array.length; i++) {
-            await delay(SHORT_DELAY_IN_MS);
-            setValues({arr: array.slice(0,i)});
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+        if (values.inputValue) {
+            if (values.inputValue > 19) {
+                console.log('to many symbols')
+                setValues({inputValue: 0})
+                return;
+            }
         }
-        setValues({loader: false} );
-        setValues({inputValue: ''});
-    };
+        setValues({loader: true})
+    }
 
-    const tookSequence = () => {
-        showCurrentSequence(values).then(r => console.log(r))
-    };
+    console.log(values)
+
+
+
+
+
+
 
 
   return (
@@ -56,7 +67,8 @@ export const FibonacciPage: FC = () => {
             onChange={handleChange}/>
         <Button text={'Рассчитать'}
                 extraClass={'button-style'}
-                onClick={tookSequence}
+                onClick={handleClick}
+
         />
       </div>
     </SolutionLayout>

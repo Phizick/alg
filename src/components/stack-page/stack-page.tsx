@@ -24,7 +24,6 @@ export const StackPage: React.FC = () => {
         <Button text={'Очистить'}
                 extraClass={'button-style'}/>
       </div>
-
     </SolutionLayout>
   );
 };
