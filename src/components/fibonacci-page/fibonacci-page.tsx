@@ -6,7 +6,7 @@ import {Button} from "../ui/button/button";
 import {useForm} from "../../Utils/Hooks/useForm";
 import {getNumbers} from "../../Utils/FibbonacciUtils";
 import {SHORT_DELAY_IN_MS} from "../../constants/delays";
-import {delay} from "../../Utils/Delay";
+import {delay} from "../../Utils/Utils";
 import {Circle} from "../ui/circle/circle";
 
 
@@ -25,21 +25,20 @@ export const FibonacciPage: FC = () => {
         const arr = getNumbers(value)
         for (let i = 0; i <= arr.length; i++) {
             await delay(SHORT_DELAY_IN_MS)
-            setValues({arr: arr.slice(0, i + 1)})
+            setValues({fibArr: arr.slice(0, i + 1)})
         }
-        setValues({loader: false})
+        // setValues({loader: false})
+
+
+
     }
 
     const handleClick = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>): void => {
         e.preventDefault();
         console.log(values)
-        getArr(Number(values.inputValue)).then()
-            setValues({inputValue: ''})
+        getArr(Number(values.inputValue))
+        setValues({inputValue: ''})
     }
-
-
-
-
 
 
 
@@ -61,7 +60,7 @@ export const FibonacciPage: FC = () => {
         />
           </div>
           <ul className={`${stylesFiboPage.ul}`}>
-              {values.arr && values.arr.map((item: number, index: number) => {
+              {values.fibArr && values.fibArr.map((item: number, index: number) => {
                   return (
                       <Circle letter={`${item}`} key={index}/>
                   )

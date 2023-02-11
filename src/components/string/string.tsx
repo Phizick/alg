@@ -6,21 +6,19 @@ import stylesStringPage from './string.module.css'
 import {useForm} from "../../Utils/Hooks/useForm";
 import {ElementStates} from "../../types/element-states";
 import {swapArray} from "../../Utils/String";
-
 import {Circle} from "../ui/circle/circle";
-import {delay} from "../../Utils/Delay";
+import {delay} from "../../Utils/Utils";
 import {DELAY_IN_MS} from "../../constants/delays";
+
 
 export type TStringArray = {
     state: ElementStates;
-    item?: string
+    item?: string | number
 }
 
-
 export const StringComponent: FC = () => {
-    const { values, handleChange, setValues } = useForm({inputLetters: '', loader: false, currentIndex: null, reversedArr: []});
+    const { values, setValues } = useForm({inputLetters: '', loader: false, currentIndex: null, reversedArr: []});
 
-    // заменить на handleСhange из useForm ?
     const changeValue = (e: FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value
         setValues({inputLetters: value})
@@ -46,23 +44,21 @@ export const StringComponent: FC = () => {
             await delay(DELAY_IN_MS)
         }
         setValues({loader: false});
-        // setValues({reversedArr: [...arr]});
     };
 
-    const getReverse = () => {
-        const arr = values.inputLetters?.split('').map((item: any) => ({ item, state: ElementStates.Default}))
-        reverseLetters(arr)
-    }
+    const formedArr = values.inputLetters?.split('').map((item: any) => ({ item, state: ElementStates.Default}))
 
-    // console.log(values)
+    const getReverse = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        reverseLetters(formedArr);
+        setValues({inputLetters: ''})
+    };
 
-
-
-
-
+        // console.log(values)
 
   return (
     <SolutionLayout title="Строка">
+        <form onSubmit={getReverse} className={`${stylesStringPage.form}`}>
         <div className={`${stylesStringPage.container}`}>
       <Input
           placeholder={'Введите текст'}
@@ -74,6 +70,7 @@ export const StringComponent: FC = () => {
               extraClass={'button-style'}
               onClick={getReverse}
       />
+        </div>
             <ul className={`${stylesStringPage.ul}`}>
                 { values.reversedArr &&
                     values.reversedArr?.map((item: any, index: number) => {
@@ -86,8 +83,7 @@ export const StringComponent: FC = () => {
                 }
 
             </ul>
-
-        </div>
+        </form>
     </SolutionLayout>
   );
 };

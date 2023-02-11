@@ -8,8 +8,17 @@
 .ul {
     display: flex;
     flex-direction: row;
+    margin: 0 auto;
+    padding-top: 75px;
 }
 
 .li {
     list-style-type: none;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    justify-content: center;
 }
