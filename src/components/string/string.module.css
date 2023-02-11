@@ -5,3 +5,11 @@
     max-width: 512px;
     gap: 12px;
 }
+.ul {
+    display: flex;
+    flex-direction: row;
+}
+
+.li {
+    list-style-type: none;
+}
