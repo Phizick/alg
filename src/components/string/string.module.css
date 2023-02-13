@@ -22,3 +22,7 @@
     margin: 0 auto;
     justify-content: center;
 }
+
+.img {
+    max-width: 250px;
+}

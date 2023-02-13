@@ -9,6 +9,7 @@ import {swapArray} from "../../Utils/String";
 import {Circle} from "../ui/circle/circle";
 import {delay} from "../../Utils/Utils";
 import {DELAY_IN_MS} from "../../constants/delays";
+import img from '../../images/end_img.jpeg'
 
 
 export type TStringArray = {
@@ -17,7 +18,7 @@ export type TStringArray = {
 }
 
 export const StringComponent: FC = () => {
-    const { values, setValues } = useForm({inputLetters: '', loader: false, currentIndex: null, reversedArr: []});
+    const { values, setValues } = useForm({inputLetters: '', loader: false, currentIndex: null, reversedArr: [], end: false});
 
     const changeValue = (e: FormEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value
@@ -44,6 +45,7 @@ export const StringComponent: FC = () => {
             await delay(DELAY_IN_MS)
         }
         setValues({loader: false});
+        setValues({end: true})
     };
 
     const formedArr = values.inputLetters?.split('').map((item: any) => ({ item, state: ElementStates.Default}))
@@ -81,7 +83,9 @@ export const StringComponent: FC = () => {
                         )
                     })
                 }
-
+                { values.end &&
+                    <img className={`${stylesStringPage.img}`} src={img} alt={'end'}/>
+                }
             </ul>
         </form>
     </SolutionLayout>
