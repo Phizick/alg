@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC} from "react";
+import React, {ChangeEvent, FC, useEffect, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesSortingPage from "./sortingPage.module.css";
 import {RadioInput} from '../ui/radio-input/radio-input'
@@ -20,13 +20,16 @@ export type TSortingArray = {
 
 export const SortingPage: FC = () => {
 
-    const { values, handleChange, setValues } = useForm({radioState: null, arr: [], loader: false, sortingEnumeration: null});
+    const { values, handleChange, setValues } = useForm({radioState: 'default', arr: null, loader: false, sortingEnumeration: null});
 
-    const handleRadio = (e: ChangeEvent<HTMLInputElement>): void => {
+
+    const handleRadio = (e: any) => {
         setValues({radioState: e.target.value})
+        console.log(values.radioState)
     };
 
     const selectionSort = async (arr: TSortingArray[], sortingEvnt: Direction) => {
+        console.log(1)
         setValues({loader: true})
         for (let i = 0; i < arr?.length; i++) {
             let index = i;
@@ -62,6 +65,7 @@ export const SortingPage: FC = () => {
     }
 
     const bubbleSort = async (arr: TSortingArray[], sortingEvnt: Direction) => {
+        console.log(2)
         setValues({loader: true})
         for (let i = 0; i < arr?.length; i++) {
             for (let p = 0; p < arr?.length - i - 1; p++) {
@@ -92,15 +96,12 @@ export const SortingPage: FC = () => {
 
     const startingSort = (sorting: Direction) => {
         setValues({sortingEnumeration: sorting})
-        console.log(values.arr)
-        values.radioState === 'Выбор' ? selectionSort(values.arr, sorting) : bubbleSort(values.arr, sorting)
+        console.log(values.radioState)
+        values.radioState === 'bubble' ? selectionSort(values.arr, sorting) : bubbleSort(values.arr, sorting)
     }
 
     const getRandomArr = () => {
-        const arr2 = randomArray()
-        console.log(arr2)
-        setValues({arr: arr2 })
-        console.log(values.arr)
+        setValues({arr: randomArray() })
     }
 
 
@@ -112,6 +113,7 @@ export const SortingPage: FC = () => {
             label={'Выбор'}
             value={'default'}
             checked={values.radioState === 'default'}
+
             onChange={handleRadio}
         />
         <RadioInput
@@ -138,8 +140,7 @@ export const SortingPage: FC = () => {
       />
     </form>
         <ul className={`${stylesSortingPage.columns}`}>
-            { values.arr && values.arr
-                .map((item: any, index: number) => {
+            { values.arr?.map((item: any, index: number) => {
                     return (
                         <li className={`${stylesSortingPage.li}`} key={index}>
                             <Column index={item.item} state={item.state}/>
