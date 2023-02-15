@@ -14,7 +14,7 @@ import img from '../../images/end_img.jpeg'
 
 export type TStringArray = {
     state: ElementStates;
-    item?: string | number
+    item?: string | number;
 }
 
 export const StringComponent: FC = () => {
