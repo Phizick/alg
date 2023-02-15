@@ -1,10 +1,15 @@
-import React, { FC, useRef } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import React, {FC, FormEvent} from "react";
+import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesStringPage from "./stack-page.module.css";
+import stylesStackPage from "./stack-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Stack} from "../../Utils/Stack";
 import {useForm} from "../../Utils/Hooks/useForm";
+import {delay} from "../../Utils/Utils";
+import {SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {Circle} from "../ui/circle/circle";
+import {ElementStates} from "../../types/element-states";
 
 type TValues = {
     values: {
@@ -16,14 +21,14 @@ type TValues = {
         delete: boolean
         clear: boolean
     }
-    setValues: () => void
+    setValues: any
 }
 
 
 export const StackPage: FC = () => {
 
     const { values, setValues }: TValues = useForm({
-        inputValue: null,
+        inputValue: '',
         stackArr: null,
         currentIndex: null,
         isLoader: false,
@@ -32,20 +37,40 @@ export const StackPage: FC = () => {
         clear: false
     })
 
-    const stack = useRef<Stack<string>>(new Stack());
+    const stack = new Stack<string>();
 
+    const handleInput = (e: FormEvent<HTMLInputElement>): void => {
+        setValues({inputValue: e.currentTarget.value})
+    }
 
+    const peak = () => {
+        return stack.peak();
+    };
 
+    const push = async (item: string) => {
+        setValues({add: true, stackArr: stack.collectedArr(), inputValue: '',});
+        stack.push(item);
+        await delay(SHORT_DELAY_IN_MS)
+        setValues({currentIndex: values.currentIndex + 1, add: true});
+    };
 
+    const pop = async () => {
+        setValues({delete: true, stackArr: stack.size - 1})
+        await delay(SHORT_DELAY_IN_MS)
+        setValues({delete: false})
+    };
 
-
-
+    const clear = () => {
+        setValues({clear: true})
+        stack.clear();
+        setValues({arr: stack.collectedArr(), currentIndex: 0, clear: false})
+    }
 
 
 
   return (
     <SolutionLayout title="Стек">
-      <div className={`${stylesStringPage.container}`}>
+      <form className={`${stylesStringPage.container}`} onSubmit={(e) => e.preventDefault()}>
         <div className={`${stylesStringPage.buttons}`}>
         <Input
             placeholder={'Введите текст'}
@@ -53,15 +78,39 @@ export const StackPage: FC = () => {
             isLimitText={true}
             maxLength={11}
             type={'text'}
+            onChange={handleInput}
+            value={values.inputValue}
             />
         <Button text={'Добавить'}
-                extraClass={'button-style'}/>
+                extraClass={'button-style'}
+        onClick={() => push(values.inputValue)}
+        />
         <Button text={'Удалить'}
-                extraClass={'button-style'}/>
+                extraClass={'button-style'}
+        onClick={() => pop()}/>
         </div>
         <Button text={'Очистить'}
-                extraClass={'button-style'}/>
-      </div>
+                extraClass={'button-style'}
+        // onClick={() => clear()}
+          />
+      </form>
+        <ul className={`${stylesStackPage.ul}`}>
+            { values.stackArr && values.stackArr
+                .map((item:any, index: number) => {
+                    return (
+                        <li className={`${stylesStackPage.li}`} key={index}>
+                            <Circle
+                                index={index}
+                                letter={item}
+                                head={peak() === index ? 'top' : null}
+                                state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
+                                />
+                        </li>
+                    )
+                })
+
+            }
+        </ul>
     </SolutionLayout>
   );
 };
