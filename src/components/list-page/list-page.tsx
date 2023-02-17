@@ -5,6 +5,8 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 
 export const ListPage: React.FC = () => {
+
+
   return (
     <SolutionLayout title="Связный список">
       <div className={`${stylesListPage.container}`}>

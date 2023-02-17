@@ -29,7 +29,7 @@ export const StackPage: FC = () => {
 
     const { values, setValues }: TValues = useForm({
         inputValue: '',
-        stackArr: null,
+        stackArr: [],
         currentIndex: null,
         isLoader: false,
         add: false,
@@ -48,10 +48,11 @@ export const StackPage: FC = () => {
     };
 
     const push = async (item: string) => {
-        setValues({add: true, stackArr: stack.collectedArr(), inputValue: '',});
+        setValues({add: true, inputValue: '',});
         stack.push(item);
         await delay(SHORT_DELAY_IN_MS)
-        setValues({currentIndex: values.currentIndex + 1, add: true});
+        setValues({currentIndex: values.currentIndex + 1, add: false, stackArr: stack.collectedArr()});
+        console.log(stack)
     };
 
     const pop = async () => {
@@ -63,7 +64,7 @@ export const StackPage: FC = () => {
     const clear = () => {
         setValues({clear: true})
         stack.clear();
-        setValues({arr: stack.collectedArr(), currentIndex: 0, clear: false})
+        setValues({stackArr: stack.collectedArr(), currentIndex: 0, clear: false})
     }
 
 
@@ -95,8 +96,7 @@ export const StackPage: FC = () => {
           />
       </form>
         <ul className={`${stylesStackPage.ul}`}>
-            { values.stackArr && values.stackArr
-                .map((item:any, index: number) => {
+            { values.stackArr?.map((item:any, index: number) => {
                     return (
                         <li className={`${stylesStackPage.li}`} key={index}>
                             <Circle
