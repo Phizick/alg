@@ -1,10 +1,10 @@
-import React from "react";
+import React, { FC } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import stylesListPage from "./list-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 
-export const ListPage: React.FC = () => {
+export const ListPage: FC = () => {
 
 
   return (
