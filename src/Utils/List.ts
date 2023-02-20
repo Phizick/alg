@@ -1,10 +1,22 @@
 import {ElementStates} from "../types/element-states";
 
+interface ISmallItem {
+    value: string,
+    state: ElementStates
+}
+
+interface IListArr {
+    value: string,
+    state: ElementStates,
+    smallItem: ISmallItem | null
+}
+
 export const initialArr = ['0', '34', '8', '1'];
 
-export const listArr = initialArr.map((item) => ({
+export const listArr: IListArr[] = initialArr.map((item) => ({
     value: item,
-    state: ElementStates.Default
+    state: ElementStates.Default,
+    smallItem: null
 }))
 
 interface IList<T> {

@@ -11,18 +11,27 @@ import {ElementStates} from "../../types/element-states";
 export const ListPage: FC = () => {
 
     const [inputValue, setValue ] = useState('')
+    const [inputIndex, setIndex ] = useState(0)
     const [listArray, setListArray] = useState(listArr)
 
     const itemsList = new List<string>(initialArr)
 
+
     const addToHead = async () => {
         itemsList.prepend(inputValue)
+        if (listArray.length > 0) {
+            listArray[0].smallItem = {
+                value: inputValue,
+                state: ElementStates.Changing
+            }
+        }
         setListArray([...listArray])
         await delay(SHORT_DELAY_IN_MS)
+        listArray[0].smallItem = null
         listArray.unshift({
             ...listArray[0],
             value: inputValue,
-            state: ElementStates.Modified
+            state: ElementStates.Modified,
         })
         setListArray([...listArray])
         await delay(SHORT_DELAY_IN_MS)
@@ -33,11 +42,23 @@ export const ListPage: FC = () => {
 
     const addToTail = async () => {
         itemsList.append(inputValue)
+        listArray[listArray.length - 1] = {
+            ...listArray[listArray.length - 1],
+            smallItem: {
+                value: inputValue,
+                state: ElementStates.Changing
+            }
+        }
         setListArray([...listArray])
         await delay(SHORT_DELAY_IN_MS)
+        listArray[listArray.length - 1] = {
+            ...listArray[listArray.length - 1],
+            smallItem: null
+        }
         listArray.push({
             value: inputValue,
-            state: ElementStates.Modified
+            state: ElementStates.Modified,
+            smallItem: null
         })
         setListArray([...listArray])
         await delay(SHORT_DELAY_IN_MS)
@@ -48,7 +69,11 @@ export const ListPage: FC = () => {
     const deleteFromHead = async () => {
         listArray[0] = {
             ...listArray[0],
-            value: ''
+            value: '',
+            smallItem: {
+                value: listArray[0].value,
+                state: ElementStates.Changing
+            }
         }
         itemsList.clearHead()
         setListArray([...listArray])
@@ -60,15 +85,20 @@ export const ListPage: FC = () => {
     const deleteFromTail = async () => {
         listArray[listArray.length - 1] = {
             ...listArray[listArray.length - 1],
-            value: ''
+            value: '',
+            smallItem: {
+                value: listArray[listArray.length - 1].value,
+                state: ElementStates.Changing
+            }
         }
         itemsList.clearTail()
         setListArray([...listArray])
         await delay(SHORT_DELAY_IN_MS)
         listArray.pop()
         setListArray([...listArray])
-
     }
+
+
 
 
 
@@ -91,15 +121,19 @@ export const ListPage: FC = () => {
       />
       <Button text={'Добавить в head'}
               extraClass={'button-style'}
+              onClick={addToHead}
       />
         <Button text={'Добавить в tail'}
                 extraClass={'button-style'}
+                onClick={addToTail}
                />
       <Button text={'Удалить из head'}
               extraClass={'button-style'}
+              onClick={deleteFromHead}
       />
         <Button text={'Удалить из tail'}
                 extraClass={'button-style'}
+                onClick={deleteFromTail}
         />
     </div>
       <div className={`${stylesListPage.buttons}`}>
@@ -118,8 +152,11 @@ export const ListPage: FC = () => {
         />
     </div>
       </form>
+        <ul className={`${stylesListPage.ul}`}>
+            <li className={`${stylesListPage.li}`}>
 
-
+            </li>
+        </ul>
     </SolutionLayout>
   );
 };
