@@ -31,19 +31,63 @@ export const ListPage: FC = () => {
         setValue('')
     }
 
+    const addToTail = async () => {
+        itemsList.append(inputValue)
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray.push({
+            value: inputValue,
+            state: ElementStates.Modified
+        })
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray[listArray.length - 1].state = ElementStates.Default
+        setListArray([...listArray])
+    }
+
+    const deleteFromHead = async () => {
+        listArray[0] = {
+            ...listArray[0],
+            value: ''
+        }
+        itemsList.clearHead()
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray.shift()
+        setListArray([...listArray])
+    }
+
+    const deleteFromTail = async () => {
+        listArray[listArray.length - 1] = {
+            ...listArray[listArray.length - 1],
+            value: ''
+        }
+        itemsList.clearTail()
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray.pop()
+        setListArray([...listArray])
+
+    }
+
+
+
+
+
+
+
 
 
 
   return (
     <SolutionLayout title="Связный список">
-      <div className={`${stylesListPage.container}`}>
+      <form className={`${stylesListPage.container}`} onSubmit={(e) => e.preventDefault()}>
       <div className={`${stylesListPage.buttons}`}>
       <Input
           placeholder={'Введите символ'}
           extraClass={'input-style'}
           isLimitText={true}
           maxLength={4}
-          type={undefined}
       />
       <Button text={'Добавить в head'}
               extraClass={'button-style'}
@@ -73,7 +117,7 @@ export const ListPage: FC = () => {
                 linkedList={'big'}
         />
     </div>
-      </div>
+      </form>
 
 
     </SolutionLayout>
