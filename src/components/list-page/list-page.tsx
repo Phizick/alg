@@ -1,10 +1,37 @@
-import React, { FC } from "react";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import React, {FC, useState} from "react";
+import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesListPage from "./list-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
+import {initialArr, List, listArr} from "../../Utils/List";
+import {SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {delay} from "../../Utils/Utils";
+import {ElementStates} from "../../types/element-states";
 
 export const ListPage: FC = () => {
+
+    const [inputValue, setValue ] = useState('')
+    const [listArray, setListArray] = useState(listArr)
+
+    const itemsList = new List<string>(initialArr)
+
+    const addToHead = async () => {
+        itemsList.prepend(inputValue)
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray.unshift({
+            ...listArray[0],
+            value: inputValue,
+            state: ElementStates.Modified
+        })
+        setListArray([...listArray])
+        await delay(SHORT_DELAY_IN_MS)
+        listArray[0].state = ElementStates.Default
+        setListArray([...listArray])
+        setValue('')
+    }
+
+
 
 
   return (
