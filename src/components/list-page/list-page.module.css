@@ -11,3 +11,8 @@
     flex-direction: row;
     gap: 12px;
 }
+
+.ul {
+    display: flex;
+    flex-direction: row;
+}

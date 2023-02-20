@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, FormEvent, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesListPage from "./list-page.module.css";
 import {Input} from "../ui/input/input";
@@ -7,6 +7,8 @@ import {initialArr, List, listArr} from "../../Utils/List";
 import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {delay} from "../../Utils/Utils";
 import {ElementStates} from "../../types/element-states";
+import {Circle} from "../ui/circle/circle";
+import {ArrowIcon} from "../ui/icons/arrow-icon";
 
 export const ListPage: FC = () => {
 
@@ -14,8 +16,13 @@ export const ListPage: FC = () => {
     const [inputIndex, setIndex ] = useState(0)
     const [listArray, setListArray] = useState(listArr)
 
+    console.log(listArray)
+
     const itemsList = new List<string>(initialArr)
 
+    const handleInputValue = (e: FormEvent<HTMLInputElement>): void => {
+        setValue(e.currentTarget.value)
+    }
 
     const addToHead = async () => {
         itemsList.prepend(inputValue)
@@ -109,6 +116,8 @@ export const ListPage: FC = () => {
 
 
 
+
+
   return (
     <SolutionLayout title="Связный список">
       <form className={`${stylesListPage.container}`} onSubmit={(e) => e.preventDefault()}>
@@ -118,6 +127,7 @@ export const ListPage: FC = () => {
           extraClass={'input-style'}
           isLimitText={true}
           maxLength={4}
+          onChange={handleInputValue}
       />
       <Button text={'Добавить в head'}
               extraClass={'button-style'}
@@ -153,9 +163,30 @@ export const ListPage: FC = () => {
     </div>
       </form>
         <ul className={`${stylesListPage.ul}`}>
-            <li className={`${stylesListPage.li}`}>
+            {listArray.map((item: any, index: number) => {
+                console.log(item)
+                return (
+                    <li className={`${stylesListPage.li}`}>
+                        {item.smallItem && (
+                            <Circle letter={item.smallItem.value} state={item.smallItem.state} isSmall/>
+                        )}
+                        <Circle
+                            letter={item.value}
+                            index={index}
+                            head={index === 0 && !item.smallItem ? 'head' : ''}
+                            tail={index === listArray.length - 1 && !item.smallItem ? 'tail' : ''}
+                            state={item.state}
 
-            </li>
+                        />
+                        {index < listArray.length - 1 &&
+                        <ArrowIcon fill={item.state !== ElementStates.Changing ? '#0032FF' : '#D252E1'}/>
+                        }
+
+
+                    </li>
+                )
+            })}
+
         </ul>
     </SolutionLayout>
   );
