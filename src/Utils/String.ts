@@ -1,5 +1,5 @@
 import { ElementStates } from "../types/element-states";
-import {TStringArray} from "../components/string/string";
+import {TStringArray} from "../types/String";
 
 
 export const latterStates = (defaultIndex: number, currIndex: number, arr: number[] | string[]) => {

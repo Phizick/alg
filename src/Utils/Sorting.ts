@@ -1,5 +1,5 @@
 import { randomNumber } from "./Utils";
-import {TStringArray} from "../components/string/string";
+import {TStringArray} from "../types/String";
 import {ElementStates} from "../types/element-states";
 
 export const randomArray = (): TStringArray[] => {

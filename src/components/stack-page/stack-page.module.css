@@ -14,5 +14,13 @@
 }
 
 .ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 70px;
+}
 
+.li {
+    list-style-type: none;
+    padding-left: 10px;
 }

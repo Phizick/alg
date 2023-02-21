@@ -1,4 +1,4 @@
-import React, {FC, FormEvent, useState} from "react";
+import React, {FC, FormEvent} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesStringPage from "./stack-page.module.css";
 import stylesStackPage from "./stack-page.module.css";
@@ -11,44 +11,36 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 
-// type TValues = {
-//     values: {
-//         inputValue: string
-//         stackArr: []
-//         currentIndex: number
-//         isLoader: boolean
-//         add: boolean
-//         delete: boolean
-//         clear: boolean
-//     }
-//     setValues: any
-// }
+type TValues = {
+    values: {
+        inputValue: string,
+        stackArr: string[],
+        currentIndex: number,
+        isLoader: boolean,
+        add: boolean,
+        delete: boolean,
+        clear: boolean
+    },
+    setValues: any
+}
 
 const stack = new Stack<string>();
 
 export const StackPage: FC = () => {
 
-    // const { values, setValues }: TValues = useForm({
-    //     inputValue: '',
-    //     stackArr: [],
-    //     currentIndex: null,
-    //     isLoader: false,
-    //     add: false,
-    //     delete: false,
-    //     clear: false
-    // })
-
-    const [inputValue, setInputValue] = useState('')
-    const [stackArr, setStack] = useState<string[]>()
-    const [currIndex, setIndex] = useState(0)
-
-
-
-
+    const { values, setValues }: TValues = useForm({
+        inputValue: null,
+        stackArr: null,
+        currentIndex: null,
+        isLoader: false,
+        add: false,
+        delete: false,
+        clear: false
+    })
 
 
     const handleInput = (e: FormEvent<HTMLInputElement>): void => {
-        setInputValue(e.currentTarget.value)
+        setValues({inputValue: e.currentTarget.value, stackArr: stack.collectedArr()})
     }
 
     const peak = () => {
@@ -57,28 +49,23 @@ export const StackPage: FC = () => {
 
     const push = async (item: string) => {
         stack.push(item);
-        setStack(stack.collectedArr())
-        setInputValue('')
         await delay(SHORT_DELAY_IN_MS)
-        setIndex(currIndex + 1)
-
+        setValues({currentIndex: values.currentIndex + 1})
+        setValues({stackArr: stack.collectedArr()})
     };
 
     const pop = async () => {
-        setIndex(stack.getSize() - 1)
+        setValues({currentIndex: stack.getSize() - 1})
         await delay(SHORT_DELAY_IN_MS)
         stack.pop()
-        setStack([...stack.collectedArr()])
-
+        setValues({stackArr: [...stack.collectedArr()]})
     };
 
-    const clear = () => {
-        stack.clear()
-        setStack(stack.collectedArr())
-        setIndex(0)
-    }
-
-
+    // const clear = () => {
+    //     stack.clear()
+    //     setStack(stack.collectedArr())
+    //     setIndex(0)
+    // }
 
 
   return (
@@ -92,11 +79,11 @@ export const StackPage: FC = () => {
             maxLength={11}
             type={'text'}
             onChange={handleInput}
-            value={inputValue}
+            value={values.inputValue || ''}
             />
         <Button text={'Добавить'}
                 extraClass={'button-style'}
-        onClick={() => push(inputValue)}
+        onClick={() => push(values.inputValue)}
         />
         <Button text={'Удалить'}
                 extraClass={'button-style'}
@@ -108,15 +95,14 @@ export const StackPage: FC = () => {
           />
       </form>
         <ul className={`${stylesStackPage.ul}`}>
-            { stackArr?.map((item:any, index: number) => {
-                console.log(stack.collectedArr)
+            { values.stackArr?.map((item, index: number) => {
                     return (
                         <li className={`${stylesStackPage.li}`} key={index}>
                             <Circle
                                 index={index}
                                 letter={item}
                                 head={peak() === index ? 'top' : ''}
-                                state={index === currIndex ? ElementStates.Changing : ElementStates.Default}
+                                state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
                                 />
                         </li>
                     )
