@@ -19,7 +19,6 @@ export class Stack<T> implements IStack<T> {
 
     push = (item: T): void => {
         this.container.push(item)
-
     };
 
     pop = (): void => {

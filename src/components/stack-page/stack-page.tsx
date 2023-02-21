@@ -21,7 +21,7 @@ type TValues = {
         delete: boolean,
         clear: boolean
     },
-    setValues: any
+    setValues: (arg: any) => void
 }
 
 const stack = new Stack<string>();
@@ -36,11 +36,10 @@ export const StackPage: FC = () => {
         add: false,
         delete: false,
         clear: false
-    })
-
+    });
 
     const handleInput = (e: FormEvent<HTMLInputElement>): void => {
-        setValues({inputValue: e.currentTarget.value, stackArr: stack.collectedArr()})
+        setValues({inputValue: e.currentTarget.value, stackArr: [...stack.collectedArr()]})
     }
 
     const peak = () => {
@@ -50,8 +49,9 @@ export const StackPage: FC = () => {
     const push = async (item: string) => {
         stack.push(item);
         await delay(SHORT_DELAY_IN_MS)
-        setValues({currentIndex: values.currentIndex + 1})
-        setValues({stackArr: stack.collectedArr()})
+        setValues({currentIndex: stack.getSize() - 1, stackArr: [...stack.collectedArr()]})
+        await delay(SHORT_DELAY_IN_MS)
+        setValues({currentsIndex: 0,stackArr: [...stack.collectedArr()]})
     };
 
     const pop = async () => {
@@ -61,12 +61,10 @@ export const StackPage: FC = () => {
         setValues({stackArr: [...stack.collectedArr()]})
     };
 
-    // const clear = () => {
-    //     stack.clear()
-    //     setStack(stack.collectedArr())
-    //     setIndex(0)
-    // }
-
+    const clear = () => {
+        stack.clear()
+        setValues({stackArr: [...stack.collectedArr()], currentIndex: 0})
+    };
 
   return (
     <SolutionLayout title="Стек">
@@ -76,7 +74,7 @@ export const StackPage: FC = () => {
             placeholder={'Введите текст'}
             extraClass={'input-style'}
             isLimitText={true}
-            maxLength={11}
+            maxLength={4}
             type={'text'}
             onChange={handleInput}
             value={values.inputValue || ''}
@@ -84,14 +82,17 @@ export const StackPage: FC = () => {
         <Button text={'Добавить'}
                 extraClass={'button-style'}
         onClick={() => push(values.inputValue)}
+                disabled={!Boolean(values.inputValue)}
         />
         <Button text={'Удалить'}
                 extraClass={'button-style'}
-        onClick={() => pop()}/>
+        onClick={() => pop()}
+                disabled={!Boolean(values.inputValue)}/>
         </div>
         <Button text={'Очистить'}
                 extraClass={'button-style'}
-        // onClick={() => clear()}
+        onClick={() => clear()}
+                disabled={!Boolean(values.inputValue)}
           />
       </form>
         <ul className={`${stylesStackPage.ul}`}>
@@ -100,7 +101,7 @@ export const StackPage: FC = () => {
                         <li className={`${stylesStackPage.li}`} key={index}>
                             <Circle
                                 index={index}
-                                letter={item}
+                                letter={item.trim() !== '' ? item : 'space'}
                                 head={peak() === index ? 'top' : ''}
                                 state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
                                 />
