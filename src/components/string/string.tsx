@@ -37,6 +37,8 @@ export const StringComponent: FC = () => {
         setValues({inputLetters: e.currentTarget.value})
     };
 
+
+
     const reverseLetters = async (arr: TStringArray[]) => {
         const arrMid = Math.ceil( arr.length / 2);
         for (let i = 0; i < arrMid; i++) {

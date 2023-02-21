@@ -10,45 +10,50 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 
+type TQueue = {
+    values: {
+        inputValues: string,
+        currentIndex: number
+    },
+    setValues: (arg: any) => void
+}
 
 export const QueuePage: FC = () => {
 
 
     const [queue] = useState(new Queue<string>(7));
-
-
-    const [inputValue, setInputValue] = useState<string>('');
-    const [currentIndex, setCurrentIndex] = useState<number>(-1);
-
     const [queueArray, setQueueArray] = useState<(string | undefined)[]>(queue.collectedArr());
     const [head, setHead] = useState<number>(queue.getHead());
     const [tail, setTail] = useState<number>(queue.getTail());
 
+    const {values, setValues}: TQueue = useForm({
+        inputValues: '',
+        currentIndex: -1,
+    })
+
 
     const onChange = (e: FormEvent<HTMLInputElement>): void => {
-        setInputValue(e.currentTarget.value)
+        setValues({inputValues: e.currentTarget.value})
     }
 
     const getEnqueue = async (item: string) => {
         queue.enqueue(item);
-        setInputValue( '')
+        setValues({inputValues: ''})
         setQueueArray([...queue.collectedArr()])
         setTail(queue.getTail())
-        setCurrentIndex(tail % queue.getSize())
-
+        setValues({currentIndex: tail % queue.getSize()})
         await delay(SHORT_DELAY_IN_MS)
-        setCurrentIndex(-1)
+        setValues({currentIndex: -1})
     };
 
     const getDequeue = async () => {
         if (queue) {
             queue.dequeue()
             setQueueArray([...queue.collectedArr()]);
-            setCurrentIndex((head & queue.getSize()));
+            setValues({currentIndex: (head & queue.getSize())});
             await delay(SHORT_DELAY_IN_MS)
             setHead(queue.getHead());
-            setCurrentIndex(-1);
-
+            setValues({currentIndex: -1});
         }
     }
 
@@ -70,10 +75,11 @@ export const QueuePage: FC = () => {
               maxLength={4}
               type={'text'}
               onChange={onChange}
+              value={values.inputValues || ''}
               />
           <Button text={'Добавить'}
                   extraClass={'button-style'}
-          onClick={() => getEnqueue(inputValue)}/>
+          onClick={() => getEnqueue(values.inputValues)}/>
           <Button text={'Удалить'}
                   extraClass={'button-style'}
           onClick={() => getDequeue()}
@@ -93,7 +99,7 @@ export const QueuePage: FC = () => {
                                 index={index}
                                 head={(index === head && !queue.isEmpty()) ? 'head' : ''}
                                 tail={(index === tail - 1 && !queue.isEmpty()) ? 'tail' : ''}
-                                state={index === currentIndex ? ElementStates.Changing : ElementStates.Default}
+                                state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
 
                         />
 
