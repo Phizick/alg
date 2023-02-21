@@ -1,5 +1,5 @@
 export interface IStack<T> {
-    push: any;
+    push: (item: T) => void;
     pop: () => void;
     clear: () => void;
     collectedArr: () => T[];
@@ -8,16 +8,18 @@ export interface IStack<T> {
 
 export class Stack<T> implements IStack<T> {
     private container: T[] = [];
-    collectedArr = (): T[] => this.container
+    collectedArr = (): T[] => {
+        return this.container
+    }
 
 
-    get size(): number {
+    getSize(): number {
         return this.container.length
     }
 
     push = (item: T): void => {
         this.container.push(item)
-        console.log(this.container)
+
     };
 
     pop = (): void => {
@@ -29,6 +31,6 @@ export class Stack<T> implements IStack<T> {
     };
 
     peak = (): number => {
-        return this.size - 1
+        return this.getSize() - 1
     }
 }

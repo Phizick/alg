@@ -16,12 +16,16 @@ export const ListPage: FC = () => {
     const [inputIndex, setIndex ] = useState(0)
     const [listArray, setListArray] = useState(listArr)
 
-    console.log(listArray)
+
 
     const itemsList = new List<string>(initialArr)
 
     const handleInputValue = (e: FormEvent<HTMLInputElement>): void => {
         setValue(e.currentTarget.value)
+    }
+
+    const handleIndexInputValue = (e: FormEvent<HTMLInputElement>): void => {
+        setIndex(Number(e.currentTarget.value))
     }
 
     const addToHead = async () => {
@@ -105,6 +109,85 @@ export const ListPage: FC = () => {
         setListArray([...listArray])
     }
 
+    const addByIndex = async () => {
+        itemsList.addedByIndex(inputValue, inputIndex)
+        for (let i = 0; i <= inputIndex; i++) {
+            console.log(listArray)
+            listArray[i] = {
+                ...listArray[i],
+                state: ElementStates.Changing,
+                smallItem: {
+                    value: inputValue,
+                    state: ElementStates.Changing
+                }
+            }
+            await delay(SHORT_DELAY_IN_MS)
+            setListArray([...listArray])
+            if (i > 0) {
+                listArray[i - 1] = {
+                    ...listArray[i - 1],
+                    smallItem: null
+                }
+            }
+            setListArray([...listArray])
+        }
+        await delay(SHORT_DELAY_IN_MS)
+        listArray[inputIndex] = {
+            ...listArray[inputIndex],
+            state: ElementStates.Default,
+            smallItem: null
+        }
+        listArray.splice(inputIndex, 0, {
+            value: inputValue,
+            state: ElementStates.Modified,
+            smallItem: null
+        })
+        setListArray([...listArray])
+        listArray[inputIndex].state = ElementStates.Default
+        listArray.forEach((item: any) => {
+            item.state = ElementStates.Default
+        })
+        await delay(SHORT_DELAY_IN_MS)
+        setListArray([...listArray])
+        setIndex(0)
+    }
+
+    const removeByIndex = async () => {
+        itemsList.deletedByIndex(inputIndex)
+        for (let i = 0; i <= inputIndex; i++) {
+            listArray[i] = {
+                ...listArray[i],
+                state: ElementStates.Changing
+            }
+            await delay(SHORT_DELAY_IN_MS)
+            setListArray([...listArray])
+        }
+        listArray[inputIndex] = {
+            ...listArray[inputIndex],
+            value: '',
+            smallItem: {
+                value: listArray[inputIndex].value,
+                state: ElementStates.Changing
+            }
+        }
+        await delay(SHORT_DELAY_IN_MS)
+        setListArray([...listArray])
+        listArray.splice(inputIndex, 1)
+        listArray[inputIndex - 1] = {
+            ...listArray[inputIndex - 1],
+            value: listArray[inputIndex - 1].value,
+            state: ElementStates.Modified,
+            smallItem: null
+        }
+        await delay(SHORT_DELAY_IN_MS)
+        setListArray([...listArray])
+        listArray.forEach(((item) => {
+            item.state = ElementStates.Default
+        }))
+        await delay(SHORT_DELAY_IN_MS)
+        setListArray([...listArray])
+    }
+
 
 
 
@@ -151,24 +234,27 @@ export const ListPage: FC = () => {
             placeholder={'Введите индекс'}
             extraClass={'input-style'}
             isLimitText={false}
+            onChange={handleIndexInputValue}
         />
         <Button text={'Добавить по индексу'}
                 extraClass={'button-style'}
                 linkedList={'big'}
+                onClick={addByIndex}
         />
         <Button text={'Удалить по индексу'}
                 extraClass={'button-style'}
                 linkedList={'big'}
+                onClick={removeByIndex}
         />
     </div>
       </form>
         <ul className={`${stylesListPage.ul}`}>
             {listArray.map((item: any, index: number) => {
-                console.log(item)
+                // console.log(listArray)
                 return (
                     <li className={`${stylesListPage.li}`}>
                         {item.smallItem && (
-                            <Circle letter={item.smallItem.value} state={item.smallItem.state} isSmall/>
+                            <Circle letter={item.smallItem.value} state={item.smallItem.state} isSmall />
                         )}
                         <Circle
                             letter={item.value}

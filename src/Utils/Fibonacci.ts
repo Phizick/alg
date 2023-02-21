@@ -8,6 +8,5 @@ export const getNumbers = (count: number) => {
         const nextNumber = fibonacciStartingNumbers[i - 2]
         fibonacciStartingNumbers.push(firstNumber + nextNumber)
     }
-    console.log(fibonacciStartingNumbers)
     return fibonacciStartingNumbers
 }
