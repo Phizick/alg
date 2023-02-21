@@ -1,7 +1,6 @@
 import React, {FC, FormEvent, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesQueuePage from "./queue.module.css";
-import stylesStringPage from '../string/string.module.css'
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Queue} from "../../Utils/Queue";
@@ -14,18 +13,13 @@ import {ElementStates} from "../../types/element-states";
 
 export const QueuePage: FC = () => {
 
-    // const [ queue ] = useState(new Queue<string>(7))
-    // const { values, setValues } = useForm({
-    //     inputValue: '',
-    //     currentIndex: 0,
-    //     head: queue.getHead(),
-    //     tail: queue.getTail(),
-    //     queueArr: queue.collectedArr()
-    // })
+
+    const [queue] = useState(new Queue<string>(7));
+
 
     const [inputValue, setInputValue] = useState<string>('');
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
-    const [queue] = useState(new Queue<string>(7));
+
     const [queueArray, setQueueArray] = useState<(string | undefined)[]>(queue.collectedArr());
     const [head, setHead] = useState<number>(queue.getHead());
     const [tail, setTail] = useState<number>(queue.getTail());
@@ -35,18 +29,15 @@ export const QueuePage: FC = () => {
         setInputValue(e.currentTarget.value)
     }
 
-
-
     const getEnqueue = async (item: string) => {
         queue.enqueue(item);
-        setInputValue('')
-        setQueueArray([...queue.collectedArr()]);
-        setTail(queue.getTail());
-        setCurrentIndex(tail % queue.getSize());
-        // setValues({inputValue: '', queueArr: [...queue.collectedArr()], tail: queue.getTail(), currentIndex: values.tail % queue.getSize()});
+        setInputValue( '')
+        setQueueArray([...queue.collectedArr()])
+        setTail(queue.getTail())
+        setCurrentIndex(tail % queue.getSize())
+
         await delay(SHORT_DELAY_IN_MS)
-        // setValues({currentIndex: -1})
-        setCurrentIndex(-1);
+        setCurrentIndex(-1)
     };
 
     const getDequeue = async () => {
@@ -54,11 +45,10 @@ export const QueuePage: FC = () => {
             queue.dequeue()
             setQueueArray([...queue.collectedArr()]);
             setCurrentIndex((head & queue.getSize()));
-            // setValues({arr: [...queue.collectedArr()], currentIndex: values.head & queue.getSize()})
             await delay(SHORT_DELAY_IN_MS)
             setHead(queue.getHead());
             setCurrentIndex(-1);
-            // setValues({head: queue.getHead(), currentIndex: -1})
+
         }
     }
 
@@ -67,13 +57,12 @@ export const QueuePage: FC = () => {
         setQueueArray(queue.collectedArr());
         setHead(queue.getHead());
         setTail(queue.getTail());
-        // setValues({arr: queue.collectedArr(), head: queue.getHead(), tail: queue.getTail()})
     }
 
   return (
     <SolutionLayout title="Очередь">
-      <form className={`${stylesStringPage.container}`}>
-        <div className={`${stylesStringPage.buttons}`}>
+      <form className={`${stylesQueuePage.container}`}>
+        <div className={`${stylesQueuePage.buttons}`}>
           <Input
               placeholder={'Введите текст'}
               extraClass={'input-style'}
@@ -98,7 +87,6 @@ export const QueuePage: FC = () => {
         <ul className={`${stylesQueuePage.ul}`}>
             {queueArray
                 .map((item: any, index: number) => {
-                    console.log(queueArray)
                     return (
                         <Circle key={index}
                                 letter={item}

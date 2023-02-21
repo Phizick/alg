@@ -16,10 +16,8 @@ type TValues = {
         inputValue: string,
         stackArr: string[],
         currentIndex: number,
-        isLoader: boolean,
-        add: boolean,
-        delete: boolean,
-        clear: boolean
+        loaderAdd: boolean,
+        loaderDel: boolean,
     },
     setValues: (arg: any) => void
 }
@@ -32,15 +30,13 @@ export const StackPage: FC = () => {
         inputValue: null,
         stackArr: null,
         currentIndex: null,
-        isLoader: false,
-        add: false,
-        delete: false,
-        clear: false
+        loaderAdd: false,
+        loaderDel: false
     });
 
     const handleInput = (e: FormEvent<HTMLInputElement>): void => {
         setValues({inputValue: e.currentTarget.value, stackArr: [...stack.collectedArr()]})
-    }
+    };
 
     const peak = () => {
         return stack.peak();
@@ -49,54 +45,56 @@ export const StackPage: FC = () => {
     const push = async (item: string) => {
         stack.push(item);
         await delay(SHORT_DELAY_IN_MS)
-        setValues({currentIndex: stack.getSize() - 1, stackArr: [...stack.collectedArr()]})
+        setValues({currentIndex: stack.getSize() - 1, stackArr: [...stack.collectedArr()], loaderAdd: true})
         await delay(SHORT_DELAY_IN_MS)
         setValues({currentsIndex: 0,stackArr: [...stack.collectedArr()]})
     };
 
     const pop = async () => {
-        setValues({currentIndex: stack.getSize() - 1})
+        setValues({currentIndex: stack.getSize() - 1, loaderDel: true, stackArr: [...stack.collectedArr()]})
         await delay(SHORT_DELAY_IN_MS)
         stack.pop()
+        await delay(SHORT_DELAY_IN_MS)
         setValues({stackArr: [...stack.collectedArr()]})
     };
 
     const clear = () => {
         stack.clear()
-        setValues({stackArr: [...stack.collectedArr()], currentIndex: 0})
+        setValues({stackArr: null, currentIndex: 0})
     };
 
-  return (
-    <SolutionLayout title="Стек">
-      <form className={`${stylesStringPage.container}`} onSubmit={(e) => e.preventDefault()}>
-        <div className={`${stylesStringPage.buttons}`}>
-        <Input
-            placeholder={'Введите текст'}
-            extraClass={'input-style'}
-            isLimitText={true}
-            maxLength={4}
-            type={'text'}
-            onChange={handleInput}
-            value={values.inputValue || ''}
-            />
-        <Button text={'Добавить'}
-                extraClass={'button-style'}
-        onClick={() => push(values.inputValue)}
-                disabled={!Boolean(values.inputValue)}
-        />
-        <Button text={'Удалить'}
-                extraClass={'button-style'}
-        onClick={() => pop()}
-                disabled={!Boolean(values.inputValue)}/>
-        </div>
-        <Button text={'Очистить'}
-                extraClass={'button-style'}
-        onClick={() => clear()}
-                disabled={!Boolean(values.inputValue)}
-          />
-      </form>
-        <ul className={`${stylesStackPage.ul}`}>
-            { values.stackArr?.map((item, index: number) => {
+    return (
+        <SolutionLayout title="Стек">
+            <form className={`${stylesStringPage.container}`} onSubmit={(e) => e.preventDefault()}>
+                <div className={`${stylesStringPage.buttons}`}>
+                    <Input
+                        placeholder={'Введите текст'}
+                        isLimitText={true}
+                        maxLength={4}
+                        type={'text'}
+                        onChange={handleInput}
+                        value={values.inputValue || ''}
+                    />
+                    <Button text={'Добавить'}
+                            extraClass={'button-style'}
+                            onClick={() => push(values.inputValue)}
+                            disabled={!Boolean(values.inputValue)}
+                            isLoader={values.loaderAdd}
+                    />
+                    <Button text={'Удалить'}
+                            extraClass={'button-style'}
+                            onClick={() => pop()}
+                            disabled={!Boolean(values.stackArr)}
+                            isLoader={values.loaderDel}/>
+                </div>
+                <Button text={'Очистить'}
+                        extraClass={'button-style'}
+                        onClick={() => clear()}
+                        disabled={!Boolean(values.stackArr)}
+                />
+            </form>
+            <ul className={`${stylesStackPage.ul}`}>
+                { values.stackArr?.map((item, index: number) => {
                     return (
                         <li className={`${stylesStackPage.li}`} key={index}>
                             <Circle
@@ -104,13 +102,12 @@ export const StackPage: FC = () => {
                                 letter={item.trim() !== '' ? item : 'space'}
                                 head={peak() === index ? 'top' : ''}
                                 state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
-                                />
+                            />
                         </li>
                     )
                 })
-
-            }
-        </ul>
-    </SolutionLayout>
-  );
+                }
+            </ul>
+        </SolutionLayout>
+    );
 };

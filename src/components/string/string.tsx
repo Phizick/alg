@@ -52,7 +52,7 @@ export const StringComponent: FC = () => {
             }
             arr[i].state = ElementStates.Modified;
             arr[p].state = ElementStates.Modified;
-            setValues({reversedArr: [...arr]});
+            setValues({reversedArr: [...arr], loader: true});
             await delay(DELAY_IN_MS)
             setValues({end: true});
         }
