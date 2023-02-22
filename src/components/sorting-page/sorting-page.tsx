@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useEffect, useState} from "react";
+import React, {ChangeEvent, FC} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesSortingPage from "./sortingPage.module.css";
 import {RadioInput} from '../ui/radio-input/radio-input'
@@ -7,17 +7,102 @@ import {useForm} from "../../Utils/Hooks/useForm";
 import {Column} from "../ui/column/column";
 import {Direction} from "../../types/direction";
 import {ElementStates} from "../../types/element-states";
-import {delay} from "../../Utils/Utils";
+import {delay, randomNumber} from "../../Utils/Utils";
+import {TArray, TSorrtArray} from "../../types/Array";
 import {DELAY_IN_MS} from "../../constants/delays";
 import {swapArray} from "../../Utils/Swap";
-import {randomNumber} from "../../Utils/Utils";
 
-
+type TSorting = {
+    values: {
+        radioState: string,
+        arr: TArray[] | null,
+        sortingEnumeration: string | null
+    },
+    setValues: (arg: any) => void
+}
 
 
 export const SortingPage: FC = () => {
 
-    const { values, setValues } = useForm({radioState: 'default', arr: null, sortingEnumeration: null});
+    const { values, setValues }: TSorting = useForm({
+        radioState: 'default',
+        arr: null,
+        sortingEnumeration: null
+    });
+
+    const minLength = 3;
+    const maxLength = 17;
+
+    const getRandomArr = (min: number, max: number, minLen = minLength, maxLen = maxLength): TSorrtArray[] => {
+        const arrLength = randomNumber(minLen, maxLen)
+        const randomArr: TSorrtArray[] = []
+        for (let i = 0; i <= arrLength; i++) {
+            randomArr.push({
+                item: randomNumber(min, max),
+                state: ElementStates.Default
+                })
+        }
+        return randomArr
+    };
+
+    const setNewRandomArr = (): void => {
+        setValues({arr: getRandomArr(0, 100)})
+    };
+
+    const handleRadio = (e: ChangeEvent<HTMLInputElement>): void => {
+        setValues({radioState: e.target.value})
+    };
+
+    const selectionSorting = async (arr: TSorrtArray[], direction: boolean) => {
+        for (let i = 0; i < arr.length; i++) {
+            let maxIndex = i
+            arr[maxIndex].state = ElementStates.Changing;
+            for (let p = i + 1; p < arr.length; p++) {
+                arr[p].state = ElementStates.Changing
+                setValues({arr: [...arr]})
+                await delay(DELAY_IN_MS)
+                if (direction ? arr[p].item < arr[maxIndex].item : arr[p].item > arr[maxIndex].item) {
+                    maxIndex = p
+                    arr[p].state = ElementStates.Changing
+                    arr[maxIndex].state = p === maxIndex ? ElementStates.Changing : ElementStates.Default
+                }
+                if (p !== maxIndex) {
+                    arr[p].state = ElementStates.Default
+                }
+                setValues({arr: [...arr]})
+            }
+            swapArray(arr, maxIndex, i)
+            arr[maxIndex].state = ElementStates.Default
+            arr[i].state = ElementStates.Modified
+            setValues({arr: [...arr]})
+        }
+        return arr
+    };
+
+    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean) => {
+        for (let i = 0; i < arr.length; i++) {
+            for (let p = 0; p < arr.length; p++) {
+                const rightItem = arr[p].item
+                const leftItem = arr[p + 1].item
+                arr[p].state = ElementStates.Changing
+                arr[p + 1].state = ElementStates.Changing
+                setValues({arr: [...arr]})
+                await delay(DELAY_IN_MS)
+                if (direction ? leftItem > rightItem : leftItem < rightItem) {
+                    arr[p].item = rightItem
+                    arr[p + 1].item = leftItem
+                }
+                arr[p].state = ElementStates.Default
+                arr[p + 1] && (arr[p + 1].state = ElementStates.Default)
+                setValues({arr:[...arr]})
+            }
+            arr[arr.length - i - 1].state = ElementStates.Modified
+            setValues({arr:[...arr]})
+        }
+        return arr
+    };
+
+
 
 
     // const handleRadio = (e: any) => {
