@@ -8,14 +8,14 @@ import {Column} from "../ui/column/column";
 import {Direction} from "../../types/direction";
 import {ElementStates} from "../../types/element-states";
 import {delay, randomNumber} from "../../Utils/Utils";
-import {TArray, TSorrtArray} from "../../types/Array";
-import {DELAY_IN_MS} from "../../constants/delays";
+import {TSorrtArray} from "../../types/Array";
+import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {swapArray} from "../../Utils/Swap";
 
 type TSorting = {
     values: {
         radioState: string,
-        arr: TArray[] | null,
+        arr: TSorrtArray[],
         sortingEnumeration: string | null
     },
     setValues: (arg: any) => void
@@ -60,7 +60,7 @@ export const SortingPage: FC = () => {
             for (let p = i + 1; p < arr.length; p++) {
                 arr[p].state = ElementStates.Changing
                 setValues({arr: [...arr]})
-                await delay(DELAY_IN_MS)
+                await delay(SHORT_DELAY_IN_MS)
                 if (direction ? arr[p].item < arr[maxIndex].item : arr[p].item > arr[maxIndex].item) {
                     maxIndex = p
                     arr[p].state = ElementStates.Changing
@@ -79,15 +79,16 @@ export const SortingPage: FC = () => {
         return arr
     };
 
-    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean) => {
+    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean): Promise<TSorrtArray[]> => {
+        console.log(arr)
         for (let i = 0; i < arr.length; i++) {
-            for (let p = 0; p < arr.length; p++) {
-                const rightItem = arr[p].item
-                const leftItem = arr[p + 1].item
+            for (let p = 0; p < arr.length - i - 1; p++) {
+                const rightItem = arr[p + 1].item
+                const leftItem = arr[p].item
                 arr[p].state = ElementStates.Changing
                 arr[p + 1].state = ElementStates.Changing
                 setValues({arr: [...arr]})
-                await delay(DELAY_IN_MS)
+                await delay(SHORT_DELAY_IN_MS)
                 if (direction ? leftItem > rightItem : leftItem < rightItem) {
                     arr[p].item = rightItem
                     arr[p + 1].item = leftItem
@@ -102,88 +103,15 @@ export const SortingPage: FC = () => {
         return arr
     };
 
+    const startSorting = async (direction: string) => {
+        const match = direction === 'Direction.Ascending';
+        if (values.radioState === 'default') {
+            setValues({arr: [...await selectionSorting(values.arr, match)]})
+        } else {
+            setValues({arr:[...await bubbleSotring(values.arr, match)]})
+        }
+    }
 
-
-
-    // const handleRadio = (e: any) => {
-    //     setValues({radioState: e.target.value})
-    // };
-    //
-    // const selectionSort = async (arr: TSortingArray[], sortingEvnt: Direction) => {
-    //     console.log(1)
-    //     setValues({loader: true})
-    //     for (let i = 0; i < arr?.length; i++) {
-    //         let index = i;
-    //         for (let p = i +1; p < arr?.length; p++) {
-    //             arr[i].state = ElementStates.Changing;
-    //             arr[p].state = ElementStates.Changing;
-    //             setValues({arr: [...arr]});
-    //             await delay(DELAY_IN_MS);
-    //             if (sortingEvnt === Direction.Ascending) {
-    //                 if (arr[p].item > arr[index].item) {
-    //                     index = p;
-    //                     swapArray(arr, p, index);
-    //                     setValues({arr:[...arr]})
-    //                 }
-    //             }
-    //             if (sortingEvnt === Direction.Descending) {
-    //                 if (arr[p].state > arr[index].state) {
-    //                     index = p;
-    //                     swapArray(arr, p, index)
-    //                     setValues({arr: [...arr]})
-    //                 }
-    //             }
-    //             arr[i].state = ElementStates.Default;
-    //             arr[p].state = ElementStates.Default;
-    //             setValues({arr: [...arr]})
-    //         }
-    //         arr[index].state = ElementStates.Modified;
-    //         swapArray(arr, i, index);
-    //         setValues({arr:[...arr]})
-    //     }
-    //     setValues({loader: false})
-    //
-    // }
-    //
-    // const bubbleSort = async (arr: TSortingArray[], sortingEvnt: Direction) => {
-    //     console.log(2)
-    //     setValues({loader: true})
-    //     for (let i = 0; i < arr?.length; i++) {
-    //         for (let p = 0; p < arr?.length - i - 1; p++) {
-    //             arr[p].state = ElementStates.Changing;
-    //             arr[p + 1].state = ElementStates.Changing;
-    //             setValues({arr: [...arr]});
-    //             await delay(DELAY_IN_MS);
-    //             if (sortingEvnt === Direction.Ascending) {
-    //                 if (arr[p].item > arr[p + 1].item) {
-    //                     swapArray(arr, p, p + 1);
-    //                 }
-    //             }
-    //             if (sortingEvnt === Direction.Descending) {
-    //                 if (arr[p].state > arr[p + 1].state) {
-    //                     swapArray(arr, p, p + 1)
-    //                 }
-    //             }
-    //             arr[p].state = ElementStates.Default;
-    //             arr[p + 1].state = ElementStates.Default;
-    //             setValues({arr: [...arr]})
-    //         }
-    //         arr[arr.length - i - 1].state = ElementStates.Modified;
-    //         setValues({arr:[...arr]})
-    //     }
-    //     setValues({arr:[...arr]})
-    //     setValues({loader: false})
-    // };
-    //
-    // const startingSort = (sorting: Direction) => {
-    //     setValues({sortingEnumeration: sorting})
-    //     console.log(values.radioState)
-    //     values.radioState === 'bubble' ? selectionSort(values.arr, sorting) : bubbleSort(values.arr, sorting)
-    // }
-    //
-    // const getRandomArr = () => {
-    //     setValues({arr: randomArray() })
-    // }
 
 
   return (
@@ -193,30 +121,30 @@ export const SortingPage: FC = () => {
         <RadioInput
             label={'Выбор'}
             value={'default'}
-            checked={values.radioState === 'default'}
-
+            defaultChecked
             onChange={handleRadio}
         />
         <RadioInput
             label={'Пузырек'}
             value={'bubble'}
             onChange={handleRadio}
-            checked={values.radioState === 'bubble'}
         />
           </div>
           <div className={`${stylesSortingPage.buttons}`}>
         <Button text={'По возрастанию'}
                 extraClass={'button-style'}
-        onClick={() => startingSort(Direction.Ascending)}
+        onClick={() => startSorting('Direction.Ascending')}
+                sorting={Direction.Ascending}
         />
         <Button text={'По убыванию'}
                 extraClass={'button-style'}
-                onClick={() => startingSort(Direction.Descending)}
+                onClick={() => startSorting('Direction.Descending')}
+                sorting={Direction.Descending}
         />
           </div>
       <Button text={'Новый массив'}
               extraClass={'button-style'}
-              onClick={getRandomArr}
+              onClick={setNewRandomArr}
 
       />
     </form>

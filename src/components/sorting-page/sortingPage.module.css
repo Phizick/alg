@@ -22,4 +22,7 @@
     display: flex;
     justify-content: center;
     padding-top: 50px;
+    align-items: flex-end;
+    list-style-type: none;
+    gap: 10px;
 }
