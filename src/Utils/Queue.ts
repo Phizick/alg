@@ -36,25 +36,6 @@ export class Queue<T> implements IQueue<T> {
         this.container = Array(this.size)
     }
 
-    // enqueue = (item: T) => {
-    //     if (this.length >= this.size) {
-    //         throw new Error('Превышена максимальная длина списка')
-    //     } if (!this.isEmpty()) {
-    //         this.tail++
-    //     }
-    //     this.container[this.tail] = item;
-    //     this.length++;
-    // }
-    //
-    // dequeue = () => {
-    //     if (this.isEmpty()) {
-    //         throw new Error('Нет элементов в списке')
-    //     } if (this.head !== this.size - 1) {
-    //         this.head !== this.tail && this.head++
-    //     }
-    //     this.container[this.head] = undefined;
-    //     this.length++
-    // }
     enqueue = (item: T) => {
         if (this.length >= this.size) {
             throw new Error("Maximum length exceeded");

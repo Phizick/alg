@@ -10,12 +10,11 @@ export class Stack<T> implements IStack<T> {
     private container: T[] = [];
     collectedArr = (): T[] => {
         return this.container
-    }
-
+    };
 
     getSize(): number {
         return this.container.length
-    }
+    };
 
     push = (item: T): void => {
         this.container.push(item)
@@ -31,5 +30,5 @@ export class Stack<T> implements IStack<T> {
 
     peak = (): number => {
         return this.getSize() - 1
-    }
-}
+    };
+};

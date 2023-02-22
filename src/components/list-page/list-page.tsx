@@ -13,12 +13,12 @@ import {useToggle} from "../../Utils/Hooks/useToggle";
 
 export const ListPage: FC = () => {
 
-    const [inputValue, setValue ] = useState('')
-    const [inputIndex, setIndex ] = useState(0)
-    const [listArray, setListArray] = useState(listArr)
-    const [loader, setLoader] = useToggle()
-    const [delLoader, setDelLoader] = useToggle()
-    const [indexLoader, setIndexLoader] = useToggle()
+    const [inputValue, setValue ] = useState('');
+    const [inputIndex, setIndex ] = useState(0);
+    const [listArray, setListArray] = useState(listArr);
+    const [loader, setLoader] = useToggle();
+    const [delLoader, setDelLoader] = useToggle();
+    const [indexLoader, setIndexLoader] = useToggle();
 
     const itemsList = new List<string>(initialArr)
 
@@ -54,7 +54,7 @@ export const ListPage: FC = () => {
         setListArray([...listArray])
         setValue('')
         setLoader()
-    }
+    };
 
     const addToTail = async () => {
         itemsList.append(inputValue)
@@ -81,7 +81,7 @@ export const ListPage: FC = () => {
         await delay(SHORT_DELAY_IN_MS)
         listArray[listArray.length - 1].state = ElementStates.Default
         setListArray([...listArray])
-    }
+    };
 
     const deleteFromHead = async () => {
         setDelLoader()
@@ -100,7 +100,7 @@ export const ListPage: FC = () => {
         listArray.shift()
         setListArray([...listArray])
         setDelLoader()
-    }
+    };
 
     const deleteFromTail = async () => {
         setDelLoader()
@@ -119,7 +119,7 @@ export const ListPage: FC = () => {
         listArray.pop()
         setListArray([...listArray])
         setDelLoader()
-    }
+    };
 
     const addByIndex = async () => {
         setIndexLoader()
@@ -165,7 +165,7 @@ export const ListPage: FC = () => {
         setListArray([...listArray])
         setIndex(0)
         setIndexLoader()
-    }
+    };
 
     const removeByIndex = async () => {
         setIndexLoader()
@@ -213,16 +213,11 @@ export const ListPage: FC = () => {
         setListArray([...listArray])
         setIndex(1)
         setIndexLoader()
-    }
+    };
 
-
-
-
-    const minimalInputIndexValue = 0
-    const maxInputIndexValue = listArray.length + 1
-    const limitedInputValues = !(minimalInputIndexValue <= inputIndex && inputIndex <= maxInputIndexValue)
-
-
+    const minimalInputIndexValue = 0;
+    const maxInputIndexValue = listArray.length + 1;
+    const limitedInputValues = !(minimalInputIndexValue <= inputIndex && inputIndex <= maxInputIndexValue);
 
   return (
     <SolutionLayout title="Связный список">

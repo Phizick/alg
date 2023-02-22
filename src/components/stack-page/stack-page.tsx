@@ -60,8 +60,10 @@ export const StackPage: FC = () => {
 
     const clear = () => {
         stack.clear()
-        setValues({stackArr: null, currentIndex: 0})
+        setValues({stackArr: [], currentIndex: 0})
     };
+
+    const clearedArray = values.stackArr?.reduce((sum: any, item): any => sum + item, 0);
 
     return (
         <SolutionLayout title="Стек">
@@ -84,13 +86,13 @@ export const StackPage: FC = () => {
                     <Button text={'Удалить'}
                             extraClass={'button-style'}
                             onClick={() => pop()}
-                            disabled={!Boolean(values.stackArr)}
+                            disabled={clearedArray === 0}
                             isLoader={values.loaderDel}/>
                 </div>
                 <Button text={'Очистить'}
                         extraClass={'button-style'}
                         onClick={() => clear()}
-                        disabled={!Boolean(values.stackArr)}
+                        disabled={clearedArray === 0}
                 />
             </form>
             <ul className={`${stylesStackPage.ul}`}>

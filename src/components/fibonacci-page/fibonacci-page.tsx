@@ -80,7 +80,6 @@ export const FibonacciPage: FC = () => {
                                 </li>
                             );
                         })}
-
                 </ul>
             </form>
         </SolutionLayout>
