@@ -11,3 +11,7 @@ export const setCircle = (index: number, currentIndex: number, arr: string[]) =>
     }
     return ElementStates.Default
 }
+
+export const swapString = (arr: string[], firstIndex: number, secondIndex: number): void => {
+    [arr[firstIndex], arr[secondIndex - firstIndex]] = [arr[secondIndex - firstIndex], arr[firstIndex]];
+}

@@ -288,7 +288,7 @@ export const ListPage: FC = () => {
             {listArray.map((item: any, index: number) => {
                 // console.log(listArray)
                 return (
-                    <li className={`${stylesListPage.li}`}>
+                    <li className={`${stylesListPage.li}`} key={index}>
                         {item.smallItem && (
                             <Circle
                                 letter={item.smallItem.value}

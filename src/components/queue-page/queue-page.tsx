@@ -72,6 +72,8 @@ export const QueuePage: FC = () => {
 
     const clearedArray = queue.collectedArr().reduce((sum: any, item): any => sum + item, 0);
 
+    const availableLength = Boolean(values.inputValues && (queueArray.includes(undefined)))
+
     return (
         <SolutionLayout title="Очередь">
             <form className={`${stylesQueuePage.container}`}>
@@ -87,7 +89,7 @@ export const QueuePage: FC = () => {
                     />
                     <Button text={'Добавить'}
                             onClick={() => getEnqueue(values.inputValues)}
-                            disabled={!values.inputValues || queueArray.length === 6}
+                            disabled={!availableLength}
                             isLoader={addLoader}
                     />
                     <Button text={'Удалить'}
@@ -105,6 +107,7 @@ export const QueuePage: FC = () => {
                 {queueArray
                     .map((item, index: number) => {
                         return (
+                            <li className={`${stylesQueuePage.li}`} key={index}>
                             <Circle key={index}
                                     letter={item}
                                     index={index}
@@ -112,6 +115,7 @@ export const QueuePage: FC = () => {
                                     tail={(index === tail - 1 && !queue.isEmpty()) ? 'tail' : ''}
                                     state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
                             />
+                            </li>
                         )
                     })}
             </ul>

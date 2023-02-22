@@ -3,11 +3,10 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import stylesStringPage from "./string.module.css";
-import { swapArray } from "../../Utils/Swap";
 import { Circle } from "../ui/circle/circle";
 import { delay } from "../../Utils/Utils";
 import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
-import {setCircle} from "../../Utils/String";
+import {setCircle, swapString} from "../../Utils/String";
 import {useToggle} from "../../Utils/Hooks/useToggle";
 
 
@@ -29,7 +28,7 @@ export const StringComponent: FC = () => {
         setArr([...startingArr])
         await delay(SHORT_DELAY_IN_MS)
         for (let i = 0; i < Math.floor(startingArr.length / 2); i++) {
-            swapArray(startingArr, i, startingArr.length - 1)
+            swapString(startingArr, i, startingArr.length - 1)
             setIndex((i: number) => i + 1)
             setArr([...startingArr])
             await delay(DELAY_IN_MS)
