@@ -3,7 +3,7 @@ import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesListPage from "./list-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
-import {initialArr, List, listArr} from "../../Utils/List";
+import {initialArr, LinkedList, listArr} from "../../Utils/List";
 import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {delay} from "../../Utils/Utils";
 import {ElementStates} from "../../types/element-states";
@@ -20,7 +20,7 @@ export const ListPage: FC = () => {
     const [delLoader, setDelLoader] = useToggle();
     const [indexLoader, setIndexLoader] = useToggle();
 
-    const itemsList = new List<string>(initialArr)
+    const itemsList = new LinkedList<string>(initialArr)
 
     const handleInputValue = (e: FormEvent<HTMLInputElement>): void => {
         setValue((e.currentTarget.value).trim())

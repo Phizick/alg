@@ -39,7 +39,7 @@ export class Node<T> {
     }
 }
 
-export class List<T> implements IList<T> {
+export class LinkedList<T> implements IList<T> {
     private head: Node<T> | null;
     private tail: Node<T> | null;
     size: number;
