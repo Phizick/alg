@@ -1,34 +1,24 @@
-import React, {ChangeEvent, FC} from "react";
+import React, {ChangeEvent, FC, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import stylesSortingPage from "./sortingPage.module.css";
 import {RadioInput} from '../ui/radio-input/radio-input'
 import {Button} from "../ui/button/button";
-import {useForm} from "../../Utils/Hooks/useForm";
 import {Column} from "../ui/column/column";
 import {Direction} from "../../types/direction";
 import {ElementStates} from "../../types/element-states";
 import {delay, randomNumber} from "../../Utils/Utils";
 import {TSorrtArray} from "../../types/Array";
-import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {swapArray} from "../../Utils/Swap";
-
-type TSorting = {
-    values: {
-        radioState: string,
-        arr: TSorrtArray[],
-        sortingEnumeration: string | null
-    },
-    setValues: (arg: any) => void
-}
+import {useToggle} from "../../Utils/Hooks/useToggle";
 
 
 export const SortingPage: FC = () => {
 
-    const { values, setValues }: TSorting = useForm({
-        radioState: 'default',
-        arr: null,
-        sortingEnumeration: null
-    });
+    const [arr, setArr] = useState<TSorrtArray[]>([]);
+    const [radioState, setRadioState] = useState('default');
+    const [loader, setLoader] = useToggle()
+    const [isCheck, setCheck] = useToggle()
 
     const minLength = 3;
     const maxLength = 17;
@@ -46,20 +36,25 @@ export const SortingPage: FC = () => {
     };
 
     const setNewRandomArr = (): void => {
-        setValues({arr: getRandomArr(0, 100)})
+        setArr(getRandomArr(0, 100))
     };
 
     const handleRadio = (e: ChangeEvent<HTMLInputElement>): void => {
-        setValues({radioState: e.target.value})
+
+            setCheck()
+            setRadioState(e.target.value)
+
+
     };
 
     const selectionSorting = async (arr: TSorrtArray[], direction: boolean) => {
+        setLoader()
         for (let i = 0; i < arr.length; i++) {
             let maxIndex = i
             arr[maxIndex].state = ElementStates.Changing;
             for (let p = i + 1; p < arr.length; p++) {
                 arr[p].state = ElementStates.Changing
-                setValues({arr: [...arr]})
+                setArr([...arr])
                 await delay(SHORT_DELAY_IN_MS)
                 if (direction ? arr[p].item < arr[maxIndex].item : arr[p].item > arr[maxIndex].item) {
                     maxIndex = p
@@ -69,25 +64,26 @@ export const SortingPage: FC = () => {
                 if (p !== maxIndex) {
                     arr[p].state = ElementStates.Default
                 }
-                setValues({arr: [...arr]})
+                setArr( [...arr])
             }
             swapArray(arr, maxIndex, i)
             arr[maxIndex].state = ElementStates.Default
             arr[i].state = ElementStates.Modified
-            setValues({arr: [...arr]})
+            setArr([...arr])
         }
+        setLoader()
         return arr
     };
 
-    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean): Promise<TSorrtArray[]> => {
-        console.log(arr)
+    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean) => {
+        setLoader()
         for (let i = 0; i < arr.length; i++) {
             for (let p = 0; p < arr.length - i - 1; p++) {
                 const rightItem = arr[p + 1].item
                 const leftItem = arr[p].item
                 arr[p].state = ElementStates.Changing
                 arr[p + 1].state = ElementStates.Changing
-                setValues({arr: [...arr]})
+                setArr([...arr])
                 await delay(SHORT_DELAY_IN_MS)
                 if (direction ? leftItem > rightItem : leftItem < rightItem) {
                     arr[p].item = rightItem
@@ -95,61 +91,62 @@ export const SortingPage: FC = () => {
                 }
                 arr[p].state = ElementStates.Default
                 arr[p + 1] && (arr[p + 1].state = ElementStates.Default)
-                setValues({arr:[...arr]})
+                setArr([...arr])
             }
             arr[arr.length - i - 1].state = ElementStates.Modified
-            setValues({arr:[...arr]})
+            setArr([...arr])
         }
+        setLoader()
         return arr
     };
 
     const startSorting = async (direction: string) => {
         const match = direction === 'Direction.Ascending';
-        if (values.radioState === 'default') {
-            setValues({arr: [...await selectionSorting(values.arr, match)]})
-        } else {
-            setValues({arr:[...await bubbleSotring(values.arr, match)]})
-        }
-    }
-
-
+        radioState === 'default' ? setArr([...await selectionSorting(arr, match)]) : setArr([...await bubbleSotring(arr, match)])
+    };
 
   return (
     <SolutionLayout title="Сортировка массива">
-      <form className={`${stylesSortingPage.container}`}>
+      <div className={`${stylesSortingPage.container}`}>
           <div className={`${stylesSortingPage.radio}`}>
         <RadioInput
             label={'Выбор'}
             value={'default'}
             defaultChecked
             onChange={handleRadio}
+            disabled={loader}
+            checked={!isCheck}
         />
         <RadioInput
             label={'Пузырек'}
             value={'bubble'}
             onChange={handleRadio}
+            disabled={loader}
+            checked={isCheck}
         />
           </div>
           <div className={`${stylesSortingPage.buttons}`}>
         <Button text={'По возрастанию'}
-                extraClass={'button-style'}
-        onClick={() => startSorting('Direction.Ascending')}
+                onClick={() => startSorting('Direction.Ascending')}
                 sorting={Direction.Ascending}
+                isLoader={loader}
+                extraClass={`${stylesSortingPage.btn}`}
         />
         <Button text={'По убыванию'}
-                extraClass={'button-style'}
                 onClick={() => startSorting('Direction.Descending')}
                 sorting={Direction.Descending}
+                isLoader={loader}
+                extraClass={`${stylesSortingPage.btn}`}
         />
           </div>
       <Button text={'Новый массив'}
-              extraClass={'button-style'}
               onClick={setNewRandomArr}
+              disabled={loader}
 
       />
-    </form>
+    </div>
         <ul className={`${stylesSortingPage.columns}`}>
-            { values.arr?.map((item: any, index: number) => {
+            { arr?.map((item, index: number) => {
                     return (
                         <li className={`${stylesSortingPage.li}`} key={index}>
                             <Column index={item.item} state={item.state}/>

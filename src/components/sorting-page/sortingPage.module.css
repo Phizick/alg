@@ -26,3 +26,7 @@
     list-style-type: none;
     gap: 10px;
 }
+
+.btn {
+    width: 220px;
+}
