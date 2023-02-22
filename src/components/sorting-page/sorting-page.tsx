@@ -20,7 +20,7 @@ export type TSortingArray = {
 
 export const SortingPage: FC = () => {
 
-    const { values, handleChange, setValues } = useForm({radioState: 'default', arr: null, loader: false, sortingEnumeration: null});
+    const { values, setValues } = useForm({radioState: 'default', arr: null, loader: false, sortingEnumeration: null});
 
 
     const handleRadio = (e: any) => {

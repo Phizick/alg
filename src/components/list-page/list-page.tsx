@@ -9,31 +9,35 @@ import {delay} from "../../Utils/Utils";
 import {ElementStates} from "../../types/element-states";
 import {Circle} from "../ui/circle/circle";
 import {ArrowIcon} from "../ui/icons/arrow-icon";
+import {useToggle} from "../../Utils/Hooks/useToggle";
 
 export const ListPage: FC = () => {
 
     const [inputValue, setValue ] = useState('')
     const [inputIndex, setIndex ] = useState(0)
     const [listArray, setListArray] = useState(listArr)
-
-
+    const [loader, setLoader] = useToggle()
+    const [delLoader, setDelLoader] = useToggle()
+    const [indexLoader, setIndexLoader] = useToggle()
 
     const itemsList = new List<string>(initialArr)
 
     const handleInputValue = (e: FormEvent<HTMLInputElement>): void => {
-        setValue(e.currentTarget.value)
-    }
+        setValue((e.currentTarget.value).trim())
+    };
 
     const handleIndexInputValue = (e: FormEvent<HTMLInputElement>): void => {
         setIndex(Number(e.currentTarget.value))
-    }
+    };
 
     const addToHead = async () => {
+        setLoader()
         itemsList.prepend(inputValue)
-        if (listArray.length > 0) {
+        if (listArray.length >= 0) {
             listArray[0].smallItem = {
                 value: inputValue,
-                state: ElementStates.Changing
+                state: ElementStates.Changing,
+                style: 'added'
             }
         }
         setListArray([...listArray])
@@ -49,6 +53,7 @@ export const ListPage: FC = () => {
         listArray[0].state = ElementStates.Default
         setListArray([...listArray])
         setValue('')
+        setLoader()
     }
 
     const addToTail = async () => {
@@ -57,7 +62,8 @@ export const ListPage: FC = () => {
             ...listArray[listArray.length - 1],
             smallItem: {
                 value: inputValue,
-                state: ElementStates.Changing
+                state: ElementStates.Changing,
+                style: 'added'
             }
         }
         setListArray([...listArray])
@@ -78,12 +84,14 @@ export const ListPage: FC = () => {
     }
 
     const deleteFromHead = async () => {
+        setDelLoader()
         listArray[0] = {
             ...listArray[0],
             value: '',
             smallItem: {
                 value: listArray[0].value,
-                state: ElementStates.Changing
+                state: ElementStates.Changing,
+                style: 'deleted'
             }
         }
         itemsList.clearHead()
@@ -91,15 +99,18 @@ export const ListPage: FC = () => {
         await delay(SHORT_DELAY_IN_MS)
         listArray.shift()
         setListArray([...listArray])
+        setDelLoader()
     }
 
     const deleteFromTail = async () => {
+        setDelLoader()
         listArray[listArray.length - 1] = {
             ...listArray[listArray.length - 1],
             value: '',
             smallItem: {
                 value: listArray[listArray.length - 1].value,
-                state: ElementStates.Changing
+                state: ElementStates.Changing,
+                style: 'deleted'
             }
         }
         itemsList.clearTail()
@@ -107,9 +118,11 @@ export const ListPage: FC = () => {
         await delay(SHORT_DELAY_IN_MS)
         listArray.pop()
         setListArray([...listArray])
+        setDelLoader()
     }
 
     const addByIndex = async () => {
+        setIndexLoader()
         itemsList.addedByIndex(inputValue, inputIndex)
         for (let i = 0; i <= inputIndex; i++) {
             console.log(listArray)
@@ -118,7 +131,8 @@ export const ListPage: FC = () => {
                 state: ElementStates.Changing,
                 smallItem: {
                     value: inputValue,
-                    state: ElementStates.Changing
+                    state: ElementStates.Changing,
+                    style: 'added'
                 }
             }
             await delay(SHORT_DELAY_IN_MS)
@@ -137,7 +151,7 @@ export const ListPage: FC = () => {
             state: ElementStates.Default,
             smallItem: null
         }
-        listArray.splice(inputIndex, 0, {
+        listArray.splice(inputIndex, 1, {
             value: inputValue,
             state: ElementStates.Modified,
             smallItem: null
@@ -150,9 +164,11 @@ export const ListPage: FC = () => {
         await delay(SHORT_DELAY_IN_MS)
         setListArray([...listArray])
         setIndex(0)
+        setIndexLoader()
     }
 
     const removeByIndex = async () => {
+        setIndexLoader()
         itemsList.deletedByIndex(inputIndex)
         for (let i = 0; i <= inputIndex; i++) {
             listArray[i] = {
@@ -167,12 +183,21 @@ export const ListPage: FC = () => {
             value: '',
             smallItem: {
                 value: listArray[inputIndex].value,
-                state: ElementStates.Changing
+                state: ElementStates.Changing,
+                style: 'deleted'
             }
         }
         await delay(SHORT_DELAY_IN_MS)
         setListArray([...listArray])
         listArray.splice(inputIndex, 1)
+        if (inputIndex === 0) {
+            listArray[inputIndex - 1] = {
+                ...listArray[inputIndex - 1],
+                value: listArray[inputIndex].value,
+                state: ElementStates.Modified,
+                smallItem: null
+            }
+        }
         listArray[inputIndex - 1] = {
             ...listArray[inputIndex - 1],
             value: listArray[inputIndex - 1].value,
@@ -181,23 +206,21 @@ export const ListPage: FC = () => {
         }
         await delay(SHORT_DELAY_IN_MS)
         setListArray([...listArray])
-        listArray.forEach(((item) => {
+        listArray.forEach((item) => {
             item.state = ElementStates.Default
-        }))
+        })
         await delay(SHORT_DELAY_IN_MS)
         setListArray([...listArray])
+        setIndex(1)
+        setIndexLoader()
     }
 
 
 
 
-
-
-
-
-
-
-
+    const minimalInputIndexValue = 0
+    const maxInputIndexValue = listArray.length + 1
+    const limitedInputValues = !(minimalInputIndexValue <= inputIndex && inputIndex <= maxInputIndexValue)
 
 
 
@@ -209,42 +232,60 @@ export const ListPage: FC = () => {
           placeholder={'Введите символ'}
           extraClass={'input-style'}
           isLimitText={true}
+          type={'num'}
           maxLength={4}
+          max={`4 знака`}
           onChange={handleInputValue}
+          value={inputValue}
       />
       <Button text={'Добавить в head'}
               extraClass={'button-style'}
               onClick={addToHead}
+              disabled={!inputValue || listArray.length === 0}
+              isLoader={loader}
       />
         <Button text={'Добавить в tail'}
                 extraClass={'button-style'}
                 onClick={addToTail}
+                disabled={!inputValue}
+                isLoader={loader}
                />
       <Button text={'Удалить из head'}
               extraClass={'button-style'}
               onClick={deleteFromHead}
+              disabled={loader || listArray.length === 0}
+              isLoader={delLoader}
       />
         <Button text={'Удалить из tail'}
                 extraClass={'button-style'}
                 onClick={deleteFromTail}
+                isLoader={delLoader}
+                disabled={loader || listArray.length === 0}
         />
     </div>
       <div className={`${stylesListPage.buttons}`}>
         <Input
             placeholder={'Введите индекс'}
             extraClass={'input-style'}
-            isLimitText={false}
+            isLimitText={true}
+            max={listArray.length + 1}
+            type={'num'}
             onChange={handleIndexInputValue}
+            value={inputIndex}
         />
         <Button text={'Добавить по индексу'}
                 extraClass={'button-style'}
                 linkedList={'big'}
                 onClick={addByIndex}
+                disabled={limitedInputValues}
+                isLoader={indexLoader}
+
         />
         <Button text={'Удалить по индексу'}
                 extraClass={'button-style'}
                 linkedList={'big'}
                 onClick={removeByIndex}
+                isLoader={indexLoader}
         />
     </div>
       </form>
@@ -254,7 +295,12 @@ export const ListPage: FC = () => {
                 return (
                     <li className={`${stylesListPage.li}`}>
                         {item.smallItem && (
-                            <Circle letter={item.smallItem.value} state={item.smallItem.state} isSmall />
+                            <Circle
+                                letter={item.smallItem.value}
+                                state={item.smallItem.state}
+                                isSmall
+                                extraClass={`${stylesListPage[`${item.smallItem.style}`]}`}
+                            />
                         )}
                         <Circle
                             letter={item.value}
@@ -262,13 +308,10 @@ export const ListPage: FC = () => {
                             head={index === 0 && !item.smallItem ? 'head' : ''}
                             tail={index === listArray.length - 1 && !item.smallItem ? 'tail' : ''}
                             state={item.state}
-
                         />
                         {index < listArray.length - 1 &&
                         <ArrowIcon fill={item.state !== ElementStates.Changing ? '#0032FF' : '#D252E1'}/>
                         }
-
-
                     </li>
                 )
             })}

@@ -15,4 +15,26 @@
 .ul {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    padding-top: 55px;
+}
+
+.li {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+}
+
+.added {
+    position: absolute;
+    top: -70px;
+    left: 12px;
+}
+
+.deleted {
+    position: absolute;
+    bottom: -85px;
+    left: 12px;
 }

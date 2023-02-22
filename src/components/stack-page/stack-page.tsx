@@ -35,7 +35,7 @@ export const StackPage: FC = () => {
     });
 
     const handleInput = (e: FormEvent<HTMLInputElement>): void => {
-        setValues({inputValue: e.currentTarget.value, stackArr: [...stack.collectedArr()]})
+        setValues({inputValue: (e.currentTarget.value).trim(), stackArr: [...stack.collectedArr()]})
     };
 
     const peak = () => {
@@ -99,7 +99,7 @@ export const StackPage: FC = () => {
                         <li className={`${stylesStackPage.li}`} key={index}>
                             <Circle
                                 index={index}
-                                letter={item.trim() !== '' ? item : 'space'}
+                                letter={item}
                                 head={peak() === index ? 'top' : ''}
                                 state={index === values.currentIndex ? ElementStates.Changing : ElementStates.Default}
                             />

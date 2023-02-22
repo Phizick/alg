@@ -2,7 +2,8 @@ import {ElementStates} from "../types/element-states";
 
 interface ISmallItem {
     value: string,
-    state: ElementStates
+    state: ElementStates,
+    style?: string
 }
 
 interface IListArr {
