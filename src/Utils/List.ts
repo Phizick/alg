@@ -98,41 +98,9 @@ export class List<T> implements IList<T> {
             }
             this.size--
         }
-        // if (!this.head?.next) {
-        //     this.head = null
-        // } else {
-        //     while (this.head.next?.next) {
-        //         this.head = this.head.next
-        //     }
-        //     this.head.next = null
-        // }
-        // this.size--
     }
 
     addedByIndex(item: T, pos: number) {
-        // if (pos) {
-        //     const node = new Node(item)
-        //     if (pos !== 0) {
-        //         node.next = this.head;
-        //         this.head = node
-        //         this.size++
-        //     } else {
-        //         let curr = this.head
-        //         let currIndex = 0
-        //
-        //         while (currIndex < pos) {
-        //             currIndex++
-        //             if ( curr?.next && currIndex !== pos) {
-        //                 curr = curr?.next
-        //             }
-        //         }
-        //         if (curr) {
-        //             node.next = curr.next
-        //             curr.next = node
-        //         }
-        //     }
-        // }
-
         if (pos < 0 || pos > this.size) {
             return
         }
@@ -151,9 +119,7 @@ export class List<T> implements IList<T> {
                 }
                 curr.next = new Node(item, curr.next);
                 this.size++
-
             }
-
     }
 
     deletedByIndex(pos: number) {
@@ -182,6 +148,4 @@ export class List<T> implements IList<T> {
         }
         return arr
     }
-
-
 }

@@ -25,6 +25,7 @@
     align-items: flex-end;
     list-style-type: none;
     gap: 10px;
+    min-height: 340px;
 }
 
 .btn {

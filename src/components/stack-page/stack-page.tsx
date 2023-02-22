@@ -35,7 +35,9 @@ export const StackPage: FC = () => {
     });
 
     const handleInput = (e: FormEvent<HTMLInputElement>): void => {
-        setValues({inputValue: (e.currentTarget.value).trim(), stackArr: [...stack.collectedArr()]})
+        setValues({
+            inputValue: (e.currentTarget.value).trim(),
+            stackArr: [...stack.collectedArr()]})
     };
 
     const peak = () => {
@@ -45,13 +47,21 @@ export const StackPage: FC = () => {
     const push = async (item: string) => {
         stack.push(item);
         await delay(SHORT_DELAY_IN_MS)
-        setValues({currentIndex: stack.getSize() - 1, stackArr: [...stack.collectedArr()], loaderAdd: true})
+        setValues({
+            currentIndex: stack.getSize() - 1,
+            stackArr: [...stack.collectedArr()],
+            loaderAdd: true})
         await delay(SHORT_DELAY_IN_MS)
-        setValues({currentsIndex: 0,stackArr: [...stack.collectedArr()]})
+        setValues({
+            currentsIndex: 0,
+            stackArr: [...stack.collectedArr()]})
     };
 
     const pop = async () => {
-        setValues({currentIndex: stack.getSize() - 1, loaderDel: true, stackArr: [...stack.collectedArr()]})
+        setValues({
+            currentIndex: stack.getSize() - 1,
+            loaderDel: true,
+            stackArr: [...stack.collectedArr()]})
         await delay(SHORT_DELAY_IN_MS)
         stack.pop()
         await delay(SHORT_DELAY_IN_MS)
@@ -60,7 +70,9 @@ export const StackPage: FC = () => {
 
     const clear = () => {
         stack.clear()
-        setValues({stackArr: [], currentIndex: 0})
+        setValues({
+            stackArr: [],
+            currentIndex: 0})
     };
 
     const clearedArray = values.stackArr?.reduce((sum: any, item): any => sum + item, 0);

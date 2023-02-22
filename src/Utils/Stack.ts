@@ -31,4 +31,4 @@ export class Stack<T> implements IStack<T> {
     peak = (): number => {
         return this.getSize() - 1
     };
-};
+}

@@ -78,7 +78,6 @@ export const QueuePage: FC = () => {
                 <div className={`${stylesQueuePage.buttons}`}>
                     <Input
                         placeholder={'Введите текст'}
-                        extraClass={'input-style'}
                         isLimitText={true}
                         maxLength={4}
                         type={'text'}
@@ -87,20 +86,17 @@ export const QueuePage: FC = () => {
                         value={values.inputValues || ''}
                     />
                     <Button text={'Добавить'}
-                            extraClass={'button-style'}
                             onClick={() => getEnqueue(values.inputValues)}
                             disabled={!values.inputValues || queueArray.length === 6}
                             isLoader={addLoader}
                     />
                     <Button text={'Удалить'}
-                            extraClass={'button-style'}
                             onClick={() => getDequeue()}
                             disabled={!Boolean(clearedArray)}
                             isLoader={delLoader}
                     />
                 </div>
                 <Button text={'Очистить'}
-                        extraClass={'button-style'}
                         onClick={() => clear()}
                         disabled={!Boolean(clearedArray)}
                 />

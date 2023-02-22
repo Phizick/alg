@@ -12,13 +12,13 @@ import {SHORT_DELAY_IN_MS} from "../../constants/delays";
 import {swapArray} from "../../Utils/Swap";
 import {useToggle} from "../../Utils/Hooks/useToggle";
 
-
 export const SortingPage: FC = () => {
 
     const [arr, setArr] = useState<TSorrtArray[]>([]);
     const [radioState, setRadioState] = useState('default');
-    const [loader, setLoader] = useToggle()
-    const [isCheck, setCheck] = useToggle()
+    const [loader, setLoader] = useToggle();
+    const [isCheck, setCheck] = useToggle();
+    const [readyState, getReady] = useState<boolean>(false);
 
     const minLength = 3;
     const maxLength = 17;
@@ -30,21 +30,19 @@ export const SortingPage: FC = () => {
             randomArr.push({
                 item: randomNumber(min, max),
                 state: ElementStates.Default
-                })
+            })
         }
         return randomArr
     };
 
     const setNewRandomArr = (): void => {
         setArr(getRandomArr(0, 100))
+        getReady(true)
     };
 
     const handleRadio = (e: ChangeEvent<HTMLInputElement>): void => {
-
-            setCheck()
-            setRadioState(e.target.value)
-
-
+        setCheck()
+        setRadioState(e.target.value)
     };
 
     const selectionSorting = async (arr: TSorrtArray[], direction: boolean) => {
@@ -75,7 +73,7 @@ export const SortingPage: FC = () => {
         return arr
     };
 
-    const bubbleSotring = async (arr: TSorrtArray[], direction: boolean) => {
+    const bubbleSorting = async (arr: TSorrtArray[], direction: boolean) => {
         setLoader()
         for (let i = 0; i < arr.length; i++) {
             for (let p = 0; p < arr.length - i - 1; p++) {
@@ -102,60 +100,59 @@ export const SortingPage: FC = () => {
 
     const startSorting = async (direction: string) => {
         const match = direction === 'Direction.Ascending';
-        radioState === 'default' ? setArr([...await selectionSorting(arr, match)]) : setArr([...await bubbleSotring(arr, match)])
+        radioState === 'default' ? setArr([...await selectionSorting(arr, match)]) : setArr([...await bubbleSorting(arr, match)])
     };
 
-  return (
-    <SolutionLayout title="Сортировка массива">
-      <div className={`${stylesSortingPage.container}`}>
-          <div className={`${stylesSortingPage.radio}`}>
-        <RadioInput
-            label={'Выбор'}
-            value={'default'}
-            defaultChecked
-            onChange={handleRadio}
-            disabled={loader}
-            checked={!isCheck}
-        />
-        <RadioInput
-            label={'Пузырек'}
-            value={'bubble'}
-            onChange={handleRadio}
-            disabled={loader}
-            checked={isCheck}
-        />
-          </div>
-          <div className={`${stylesSortingPage.buttons}`}>
-        <Button text={'По возрастанию'}
-                onClick={() => startSorting('Direction.Ascending')}
-                sorting={Direction.Ascending}
-                isLoader={loader}
-                extraClass={`${stylesSortingPage.btn}`}
-        />
-        <Button text={'По убыванию'}
-                onClick={() => startSorting('Direction.Descending')}
-                sorting={Direction.Descending}
-                isLoader={loader}
-                extraClass={`${stylesSortingPage.btn}`}
-        />
-          </div>
-      <Button text={'Новый массив'}
-              onClick={setNewRandomArr}
-              disabled={loader}
+    return (
+        <SolutionLayout title="Сортировка массива">
+            <div className={`${stylesSortingPage.container}`}>
+                <div className={`${stylesSortingPage.radio}`}>
+                    <RadioInput
+                        label={'Выбор'}
+                        value={'default'}
+                        onChange={handleRadio}
+                        disabled={loader}
+                        checked={!isCheck}
+                    />
+                    <RadioInput
+                        label={'Пузырек'}
+                        value={'bubble'}
+                        onChange={handleRadio}
+                        disabled={loader}
+                        checked={isCheck}
+                    />
+                </div>
+                <div className={`${stylesSortingPage.buttons}`}>
+                    <Button text={'По возрастанию'}
+                            onClick={() => startSorting('Direction.Ascending')}
+                            sorting={Direction.Ascending}
+                            isLoader={loader}
+                            extraClass={`${stylesSortingPage.btn}`}
+                            disabled={!readyState}
+                    />
+                    <Button text={'По убыванию'}
+                            onClick={() => startSorting('Direction.Descending')}
+                            sorting={Direction.Descending}
+                            isLoader={loader}
+                            extraClass={`${stylesSortingPage.btn}`}
+                            disabled={!readyState}
+                    />
+                </div>
+                <Button text={'Новый массив'}
+                        onClick={setNewRandomArr}
+                        disabled={loader}
 
-      />
-    </div>
-        <ul className={`${stylesSortingPage.columns}`}>
-            { arr?.map((item, index: number) => {
+                />
+            </div>
+            <ul className={`${stylesSortingPage.columns}`}>
+                { arr?.map((item, index: number) => {
                     return (
                         <li className={`${stylesSortingPage.li}`} key={index}>
                             <Column index={item.item} state={item.state}/>
                         </li>
-
                     )
                 })}
-
-        </ul>
-    </SolutionLayout>
-  );
+            </ul>
+        </SolutionLayout>
+    );
 };

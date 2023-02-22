@@ -54,6 +54,5 @@ export class Queue<T> implements IQueue<T> {
         this.length--;
     };
 
-
     collectedArr = (): (T | undefined)[] => [...this.container]
 }

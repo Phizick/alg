@@ -151,14 +151,14 @@ export const ListPage: FC = () => {
             state: ElementStates.Default,
             smallItem: null
         }
-        listArray.splice(inputIndex, 1, {
+        listArray.splice(inputIndex, 0, {
             value: inputValue,
             state: ElementStates.Modified,
             smallItem: null
         })
         setListArray([...listArray])
         listArray[inputIndex].state = ElementStates.Default
-        listArray.forEach((item: any) => {
+        listArray.forEach((item) => {
             item.state = ElementStates.Default
         })
         await delay(SHORT_DELAY_IN_MS)
@@ -310,7 +310,6 @@ export const ListPage: FC = () => {
                     </li>
                 )
             })}
-
         </ul>
     </SolutionLayout>
   );

@@ -1,99 +1,79 @@
-import React, { FC, FormEvent } from "react";
+import React, {FC, FormEvent, useState} from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import stylesStringPage from "./string.module.css";
-import { useForm } from "../../Utils/Hooks/useForm";
-import { ElementStates } from "../../types/element-states";
 import { swapArray } from "../../Utils/Swap";
 import { Circle } from "../ui/circle/circle";
 import { delay } from "../../Utils/Utils";
-import { DELAY_IN_MS } from "../../constants/delays";
-import img from "../../images/end_img.jpeg";
-import { TArray } from "../../types/Array";
+import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {setCircle} from "../../Utils/String";
+import {useToggle} from "../../Utils/Hooks/useToggle";
 
-type TStringValues = {
-    values: {
-        inputLetters: string,
-        loader: boolean,
-        currentIndex: number | null,
-        reversedArr: TArray[] | null,
-        end: boolean,
-    },
-    setValues: (arg: any) => void,
-};
 
 export const StringComponent: FC = () => {
-    const { values, setValues }: TStringValues = useForm({
-        inputLetters: null,
-        loader: false,
-        currentIndex: null,
-        reversedArr: null,
-        end: false,
-    });
 
-    const changeValue = (e: FormEvent<HTMLInputElement>) => {
-        setValues({ inputLetters: e.currentTarget.value });
+    const [inputLetters, setLetters] = useState<string>('')
+    const [currentIndex, setIndex] = useState<number>(0)
+    const [reversedArr, setArr] = useState<string[]>([])
+    const [loader, setloader] = useToggle()
+
+    const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+        setLetters(e.currentTarget.value.trim())
     };
 
-    const reverseLetters = async (arr: TArray[]) => {
-        const arrMid = Math.ceil(arr.length / 2);
-        for (let i = 0; i < arrMid; i++) {
-            let p = arr.length - 1 - i;
-            if (arr.length === 1) {
-                arr[i].state = ElementStates.Modified;
-            } else if (i < p) {
-                arr[i].state = ElementStates.Changing;
-                arr[p].state = ElementStates.Changing;
-                setValues({ reversedArr: [...arr] });
-                swapArray(arr, i, p);
-                await delay(DELAY_IN_MS);
-            }
-            arr[i].state = ElementStates.Modified;
-            arr[p].state = ElementStates.Modified;
-            setValues({ reversedArr: [...arr], loader: true });
-            await delay(DELAY_IN_MS);
-            setValues({ end: true });
+    const reverseLetters = async (item: string) => {
+        setloader()
+        const startingArr = item.split('')
+        setIndex( 0)
+        setArr([...startingArr])
+        await delay(SHORT_DELAY_IN_MS)
+        for (let i = 0; i < Math.floor(startingArr.length / 2); i++) {
+            swapArray(startingArr, i, startingArr.length - 1)
+            setIndex((i: number) => i + 1)
+            setArr([...startingArr])
+            await delay(DELAY_IN_MS)
         }
+        setIndex((i: number) => i + 1)
+        setloader()
+        return startingArr
     };
 
-    const formedArr = values.inputLetters?.split("").map((item) => ({ item, state: ElementStates.Default }));
-
-    const getReverse = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        reverseLetters(formedArr);
-        setValues({ inputLetters: null, loader: true });
+    const startingSort = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>): void => {
+        e.preventDefault()
+        reverseLetters(inputLetters)
+        setLetters('')
     };
 
     return (
         <SolutionLayout title="Строка">
-            <form onSubmit={getReverse} className={`${stylesStringPage.form}`}>
+            <form onSubmit={startingSort} className={`${stylesStringPage.form}`}>
                 <div className={`${stylesStringPage.container}`}>
                     <Input placeholder={"Введите текст"}
                            extraClass={"input-style"}
                            isLimitText={true} maxLength={11}
-                           onChange={changeValue}
-                           value={values.inputLetters || ""}
+                           onChange={handleChange}
+                           value={inputLetters || ""}
                     />
                     <Button text={"Развернуть"}
                             extraClass={"button-style"}
-                            onClick={getReverse}
-                            isLoader={values.loader}
-                            disabled={!values.inputLetters}
+                            onClick={startingSort}
+                            isLoader={loader}
+                            disabled={!inputLetters}
                     />
                 </div>
                 <ul className={`${stylesStringPage.ul}`}>
-                    {values.reversedArr &&
-                        values.reversedArr?.map((item: any, index: number) => {
+                    {reversedArr &&
+                        reversedArr?.map((item, index: number) => {
                             return (
                                 <li className={`${stylesStringPage.li}`} key={index}>
-                                    <Circle letter={item.item}
-                                            state={item.state}
+                                    <Circle letter={item}
+                                            index={index + 1}
+                                            state={setCircle(currentIndex, index, reversedArr)}
                                     />
                                 </li>
                             );
                         })}
-                    {values.end && <img className={`${stylesStringPage.img}`} src={img} alt={"end"} />}
                 </ul>
             </form>
         </SolutionLayout>
