@@ -23,7 +23,6 @@ export const Input: React.FC<InputProps> = ({
       : `Максимальное число — ${max}`;
 
 
-
   return (
     <div className={`${styles.content} ${extraClass}`}>
       <input

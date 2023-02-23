@@ -1,89 +1,80 @@
-import React, {FC, FormEvent} from "react";
-import {SolutionLayout} from "../ui/solution-layout/solution-layout";
-import {Input} from "../ui/input/input";
-import {Button} from "../ui/button/button";
-import stylesStringPage from './string.module.css'
-import {useForm} from "../../Utils/Hooks/useForm";
-import {ElementStates} from "../../types/element-states";
-import {swapArray} from "../../Utils/String";
-import {Circle} from "../ui/circle/circle";
-import {delay} from "../../Utils/Utils";
-import {DELAY_IN_MS} from "../../constants/delays";
+import React, {FC, FormEvent, useState} from "react";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import stylesStringPage from "./string.module.css";
+import { Circle } from "../ui/circle/circle";
+import { delay } from "../../Utils/Utils";
+import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../constants/delays";
+import {setCircle, swapString} from "../../Utils/String";
+import {useToggle} from "../../Utils/Hooks/useToggle";
 
-
-export type TStringArray = {
-    state: ElementStates;
-    item?: string | number
-}
 
 export const StringComponent: FC = () => {
-    const { values, setValues } = useForm({inputLetters: '', loader: false, currentIndex: null, reversedArr: []});
 
-    const changeValue = (e: FormEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value
-        setValues({inputLetters: value})
+    const [inputLetters, setLetters] = useState<string>('')
+    const [currentIndex, setIndex] = useState<number>(0)
+    const [reversedArr, setArr] = useState<string[]>([])
+    const [loader, setloader] = useToggle()
+
+    const handleChange = (e: FormEvent<HTMLInputElement>): void => {
+        setLetters(e.currentTarget.value.trim())
     };
 
-    const reverseLetters = async (arr: TStringArray[]) => {
-        setValues({loader: true});
-        const arrMid = Math.ceil( arr?.length / 2);
-        for (let i = 0; i < arrMid; i++) {
-            let p = arr?.length - 1 - i
-            if (arr?.length === 1) {
-                arr[i].state = ElementStates.Modified
-            } else if (i < p) {
-                arr[i].state = ElementStates.Changing;
-                arr[p].state = ElementStates.Changing;
-                setValues({reversedArr: [...arr]});
-                swapArray(arr, i, p)
-                await delay(DELAY_IN_MS)
-            }
-            arr[i].state = ElementStates.Modified;
-            arr[p].state = ElementStates.Modified;
-            setValues({reversedArr: [...arr]});
+    const reverseLetters = async (item: string) => {
+        setloader()
+        const startingArr = item.split('')
+        setIndex( 0)
+        setArr([...startingArr])
+        await delay(SHORT_DELAY_IN_MS)
+        for (let i = 0; i < Math.floor(startingArr.length / 2); i++) {
+            swapString(startingArr, i, startingArr.length - 1)
+            setIndex((i: number) => i + 1)
+            setArr([...startingArr])
             await delay(DELAY_IN_MS)
         }
-        setValues({loader: false});
+        setIndex((i: number) => i + 1)
+        setloader()
+        return startingArr
     };
 
-    const formedArr = values.inputLetters?.split('').map((item: any) => ({ item, state: ElementStates.Default}))
-
-    const getReverse = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>) => {
+    const startingSort = (e: FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>): void => {
         e.preventDefault()
-        reverseLetters(formedArr);
-        setValues({inputLetters: ''})
+        reverseLetters(inputLetters)
+        setLetters('')
     };
 
-        // console.log(values)
-
-  return (
-    <SolutionLayout title="Строка">
-        <form onSubmit={getReverse} className={`${stylesStringPage.form}`}>
-        <div className={`${stylesStringPage.container}`}>
-      <Input
-          placeholder={'Введите текст'}
-          extraClass={'input-style'}
-          isLimitText={true}
-          maxLength={11}
-      onChange={changeValue}/>
-      <Button text={'Развернуть'}
-              extraClass={'button-style'}
-              onClick={getReverse}
-      />
-        </div>
-            <ul className={`${stylesStringPage.ul}`}>
-                { values.reversedArr &&
-                    values.reversedArr?.map((item: any, index: number) => {
-                        return (
-                            <li className={`${stylesStringPage.li}`} key={index}>
-                                <Circle letter={item.item} state={item.state} data-testid={'circle'}/>
-                            </li>
-                        )
-                    })
-                }
-
-            </ul>
-        </form>
-    </SolutionLayout>
-  );
+    return (
+        <SolutionLayout title="Строка">
+            <form onSubmit={startingSort} className={`${stylesStringPage.form}`}>
+                <div className={`${stylesStringPage.container}`}>
+                    <Input placeholder={"Введите текст"}
+                           extraClass={"input-style"}
+                           isLimitText={true} maxLength={11}
+                           onChange={handleChange}
+                           value={inputLetters || ""}
+                    />
+                    <Button text={"Развернуть"}
+                            extraClass={"button-style"}
+                            onClick={startingSort}
+                            isLoader={loader}
+                            disabled={!inputLetters}
+                    />
+                </div>
+                <ul className={`${stylesStringPage.ul}`}>
+                    {reversedArr &&
+                        reversedArr?.map((item, index: number) => {
+                            return (
+                                <li className={`${stylesStringPage.li}`} key={index}>
+                                    <Circle letter={item}
+                                            index={index + 1}
+                                            state={setCircle(currentIndex, index, reversedArr)}
+                                    />
+                                </li>
+                            );
+                        })}
+                </ul>
+            </form>
+        </SolutionLayout>
+    );
 };
