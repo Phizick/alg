@@ -60,6 +60,5 @@ describe('Button component testing', () => {
         expect(btn).toMatchSnapshot()
     })
 
-
 })
 
