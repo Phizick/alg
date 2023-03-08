@@ -67,7 +67,7 @@ export const StringComponent: FC = () => {
                     {reversedArr &&
                         reversedArr?.map((item, index: number) => {
                             return (
-                                <li className={`${stylesStringPage.li}`} key={index}>
+                                <li className={`${stylesStringPage.circles}`} key={index} data-cy={'circles'}>
                                     <Circle letter={item}
                                             index={index + 1}
                                             state={setCircle(currentIndex, index, reversedArr)}
