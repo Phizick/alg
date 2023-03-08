@@ -7,7 +7,7 @@ const cyForm = '[data-cy="form"]'
 const circles = 'div[class*="circle_circle"]'
 
 
-describe('testing the correct operation of the sting reversal', () => {
+describe('testing the correct operation of the sting reversal component', () => {
 
     beforeEach(() => {
         cy.visit('http://localhost:3000/recursion')

@@ -79,7 +79,7 @@ export const StackPage: FC = () => {
 
     return (
         <SolutionLayout title="Стек">
-            <form className={`${stylesStringPage.container}`} onSubmit={(e) => e.preventDefault()}>
+            <form className={`${stylesStringPage.container}`} onSubmit={(e) => e.preventDefault()} data-cy={'form'}>
                 <div className={`${stylesStringPage.buttons}`}>
                     <Input
                         placeholder={'Введите текст'}
@@ -88,23 +88,28 @@ export const StackPage: FC = () => {
                         type={'text'}
                         onChange={handleInput}
                         value={values.inputValue || ''}
+                        data-cy={'input'}
                     />
                     <Button text={'Добавить'}
                             extraClass={'button-style'}
                             onClick={() => push(values.inputValue)}
                             disabled={!Boolean(values.inputValue)}
                             isLoader={values.loaderAdd}
+                            data-cy={'submit'}
                     />
                     <Button text={'Удалить'}
                             extraClass={'button-style'}
                             onClick={() => pop()}
                             disabled={clearedArray === 0}
-                            isLoader={values.loaderDel}/>
+                            isLoader={values.loaderDel}
+                            data-cy={'remove'}
+                    />
                 </div>
                 <Button text={'Очистить'}
                         extraClass={'button-style'}
                         onClick={() => clear()}
                         disabled={clearedArray === 0}
+                        data-cy={'clear'}
                 />
             </form>
             <ul className={`${stylesStackPage.ul}`}>

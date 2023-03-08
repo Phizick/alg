@@ -1,0 +1,6 @@
+export const cyInput = '[data-cy="input"]'
+export const cySubmitBtn = '[data-cy="submit"]'
+export const cyForm = '[data-cy="form"]'
+export const circles = 'div[class*="circle_circle"]'
+export const cyClearBtn = '[data-cy="clear"]'
+export const cyRemoveBtn = '[data-cy="remove"]'

@@ -7,7 +7,8 @@ const cyForm = '[data-cy="form"]'
 const referenceSequence = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
 
 
-describe('testing the correct operation of the fibonacci sequence', () => {
+describe('testing the correct operation of the fibonacci sequence component', () => {
+
     beforeEach(() => {
         cy.visit('http://localhost:3000/fibonacci')
     })
