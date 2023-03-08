@@ -4,6 +4,7 @@ import {DELAY_IN_MS} from "../../../src/constants/delays";
 const cyInput = '[data-cy="input"]'
 const cySubmitBtn = '[data-cy="submit"]'
 const cyForm = '[data-cy="form"]'
+const circles = 'div[class*="circle_circle"]'
 
 
 describe('testing the correct operation of the sting reversal', () => {
@@ -20,50 +21,88 @@ describe('testing the correct operation of the sting reversal', () => {
             })
     })
 
-    // it('check for correct string reversal',  () => {
-    //     cy.clock()
-    //     cy.get(cyForm)
-    //         .within(() => {
-    //             cy.get(cyInput).type('test')
-    //             cy.get(cySubmitBtn).click()
-    //         })
-    //
-    //
-    // })
-
-    it("button disabled on initial open", () => {
-        cy.get(cySubmitBtn).should("be.disabled")
-    })
-
-    it("reverse string", () => {
+    it('check for correct string reversal',  () => {
         cy.clock()
-        cy.get(cyInput).type("test")
-        cy.get(cyInput).should("have.value", "test")
-        cy.get(cySubmitBtn).click()
-        cy.get('[data-cy="circles"]').as("circles")
-
-
-
-        cy.get("@circles").should(($circle) => {
-            expect($circle.eq(0)).to.have.text("t1").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(1)).to.have.text("e2").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(2)).to.have.text("s3").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(3)).to.have.text("t4").and.css("border-color", 'rgb(41, 41, 41)')
+        cy.get(cyForm)
+            .within(() => {
+                cy.get(cyInput).type('test')
+                cy.get(cySubmitBtn).click()
+            })
+        cy.get(circles).then((item) => {
+            cy.get(item[0])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_changing'))
+            cy.get(item[0])
+                .children().should('have.text', 't')
+            cy.get(item[1])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_default'))
+            cy.get(item[1])
+                .children().should('have.text', 'e')
+            cy.get(item[2])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_default'))
+            cy.get(item[2])
+                .children().should('have.text', 's')
+            cy.get(item[3])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_changing'))
+            cy.get(item[3])
+                .children().should('have.text', 't')
         })
+
         cy.tick(DELAY_IN_MS)
-        cy.get("@circles").should(($circle) => {
-            expect($circle.eq(0)).to.have.text("t1").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(1)).to.have.text("e2").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(2)).to.have.text("s3").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(3)).to.have.text("t4").and.css("border-color", 'rgb(41, 41, 41)')
+
+        cy.get(circles).then((item) => {
+            cy.get(item[0])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[0])
+                .children().should('have.text', 't')
+            cy.get(item[1])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_changing'))
+            cy.get(item[1])
+                .children().should('have.text', 'e')
+            cy.get(item[2])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_changing'))
+            cy.get(item[2])
+                .children().should('have.text', 's')
+            cy.get(item[3])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[3])
+                .children().should('have.text', 't')
         })
+
         cy.tick(DELAY_IN_MS)
-        cy.get("@circles").should(($circle) => {
-            expect($circle.eq(0)).to.have.text("t1").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(1)).to.have.text("s2").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(2)).to.have.text("e3").and.css("border-color", 'rgb(41, 41, 41)')
-            expect($circle.eq(3)).to.have.text("t4").and.css("border-color", 'rgb(41, 41, 41)')
+
+        cy.get(circles).then((item) => {
+            cy.get(item[0])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[0])
+                .children().should('have.text', 't')
+            cy.get(item[1])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[1])
+                .children().should('have.text', 's')
+            cy.get(item[2])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[2])
+                .children().should('have.text', 'e')
+            cy.get(item[3])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_modified'))
+            cy.get(item[3])
+                .children().should('have.text', 't')
         })
+
+
+
     })
 
 
