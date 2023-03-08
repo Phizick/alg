@@ -9,7 +9,7 @@ describe('Circle component testing', () => {
         const circle = TestRenderer
             .create(<Circle />)
             .toJSON()
-        expect(circle).toHaveTextContent('')
+        expect(circle).toMatchSnapshot()
     })
 
     it('Circle with text works correctly', () => {
