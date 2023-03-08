@@ -115,7 +115,7 @@ export const StackPage: FC = () => {
             <ul className={`${stylesStackPage.ul}`}>
                 { values.stackArr?.map((item, index: number) => {
                     return (
-                        <li className={`${stylesStackPage.li}`} key={index}>
+                        <li className={`${stylesStackPage.li}`} key={index} data-cy={'circles'}>
                             <Circle
                                 index={index}
                                 letter={item}
