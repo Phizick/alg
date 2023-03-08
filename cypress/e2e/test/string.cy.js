@@ -21,7 +21,7 @@ describe('testing the correct operation of the sting reversal', () => {
             })
     })
 
-    it('check for correct string reversal',  () => {
+    it('checking correct string reversal',  () => {
         cy.clock()
         cy.get(cyForm)
             .within(() => {
