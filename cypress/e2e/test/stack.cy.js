@@ -1,5 +1,5 @@
 
-import {cyForm, cyInput, cySubmitBtn, cyRemoveBtn, cyClearBtn, circles} from "../../cyConst/cyConst";
+import {cyForm, cyInput, cySubmitBtn, circles, cyClearBtn, cyRemoveBtn} from "../../cyConst/cyConst";
 import {SHORT_DELAY_IN_MS} from "../../../src/constants/delays";
 
 describe('testing the correct operation of the stack component', () => {
@@ -13,8 +13,6 @@ describe('testing the correct operation of the stack component', () => {
             .within(() => {
                 cy.get(cyInput).should('have.value', '')
                 cy.get(cySubmitBtn).should('be.disabled')
-                // cy.get(cyRemoveBtn).should('be.disabled')
-                // cy.get(cyClearBtn).should('be.disabled')
             })
     })
 
@@ -23,15 +21,11 @@ describe('testing the correct operation of the stack component', () => {
         cy.get(cyForm)
             .within(() => {
                 cy.get(cyInput).type(value)
-                // cy.get(cyRemoveBtn).should('be.disabled')
-                // cy.get(cyClearBtn).should('be.disabled')
+                cy.wait(SHORT_DELAY_IN_MS)
             })
-
         cy.get(cyForm)
             .within(() => {
                 cy.get(cySubmitBtn).click()
-                // cy.get(cyRemoveBtn).should('be.disabled')
-                // cy.get(cyClearBtn).should('be.disabled')
             })
         cy.tick(SHORT_DELAY_IN_MS)
         cy.get(circles).contains(value).parent()
@@ -42,7 +36,6 @@ describe('testing the correct operation of the stack component', () => {
 
     it('check for adding items to the stack', () => {
         cy.clock()
-
         addItem('0')
         cy.get(circles)
             .invoke('attr', 'class')
@@ -80,12 +73,33 @@ describe('testing the correct operation of the stack component', () => {
             cy.get(item[2])
                 .children().should('have.text', '2')
         })
-
     })
 
+    it('check for remove items to the stack', () => {
+        cy.clock()
+        addItem('1')
+        cy.tick(SHORT_DELAY_IN_MS)
+        addItem('2')
+        cy.tick(SHORT_DELAY_IN_MS)
+        cy.get(cyRemoveBtn).click()
+        cy.tick(SHORT_DELAY_IN_MS)
+        cy.get(circles).then(item => {
+            cy.get(item[0])
+                .invoke('attr', 'class')
+                .then(classList => expect(classList).contains('circle_default'))
+            cy.get(item[0])
+                .children().should('have.text', '1')
+        })
+    })
 
-
-
-
-
+    it('check for clear stack', () => {
+        cy.clock()
+        addItem('1')
+        cy.tick(SHORT_DELAY_IN_MS)
+        addItem('2')
+        cy.tick(SHORT_DELAY_IN_MS)
+        cy.get(cyClearBtn).click()
+        cy.tick(SHORT_DELAY_IN_MS)
+        cy.get(circles).should('have.length', 0)
+    })
 })

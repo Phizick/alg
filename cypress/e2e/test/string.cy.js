@@ -1,10 +1,5 @@
 import {DELAY_IN_MS} from "../../../src/constants/delays";
-
-
-const cyInput = '[data-cy="input"]'
-const cySubmitBtn = '[data-cy="submit"]'
-const cyForm = '[data-cy="form"]'
-const circles = 'div[class*="circle_circle"]'
+import {cyInput, cySubmitBtn, cyForm, circles} from '../../cyConst/cyConst'
 
 
 describe('testing the correct operation of the sting reversal component', () => {
@@ -19,6 +14,7 @@ describe('testing the correct operation of the sting reversal component', () => 
                 cy.get(cyInput).should('have.value', '')
                 cy.get(cySubmitBtn).should('be.disabled')
             })
+        cy.wait(DELAY_IN_MS)
     })
 
     it('checking correct string reversal',  () => {
@@ -26,6 +22,7 @@ describe('testing the correct operation of the sting reversal component', () => 
         cy.get(cyForm)
             .within(() => {
                 cy.get(cyInput).type('test')
+                cy.wait(DELAY_IN_MS)
                 cy.get(cySubmitBtn).click()
             })
         cy.get(circles).then((item) => {
@@ -100,10 +97,5 @@ describe('testing the correct operation of the sting reversal component', () => 
             cy.get(item[3])
                 .children().should('have.text', 't')
         })
-
-
-
     })
-
-
 })

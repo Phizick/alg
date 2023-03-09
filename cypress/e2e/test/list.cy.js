@@ -113,8 +113,6 @@ describe('testing the correct operation of the list component', () => {
         cy.wait(DELAY_IN_MS)
     })
 
-
-
     it('check for adding an item by index', () => {
         cy.get(cyListIndexInput).type(2)
         cy.get(cyListInput).type('4')

@@ -1,11 +1,7 @@
 import {SHORT_DELAY_IN_MS} from "../../../src/constants/delays";
+import {cyInput, cySubmitBtn, cyForm, circles} from '../../cyConst/cyConst'
 
-const circles = 'div[class*="circle_circle"]'
-const cyInput = '[data-cy="input"]'
-const cySubmitBtn = '[data-cy="submit"]'
-const cyForm = '[data-cy="form"]'
 const referenceSequence = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
-
 
 describe('testing the correct operation of the fibonacci sequence component', () => {
 
@@ -24,6 +20,7 @@ describe('testing the correct operation of the fibonacci sequence component', ()
     it('checking correct number generation', {defaultCommandTimeout: SHORT_DELAY_IN_MS}, () => {
         const number = 11
         cy.get(cyInput).type(11)
+        cy.wait(SHORT_DELAY_IN_MS)
         cy.get(cySubmitBtn).click()
         cy.get(circles)
             .should('have.length', number === 11 ? 1 : number + 1)
@@ -32,7 +29,5 @@ describe('testing the correct operation of the fibonacci sequence component', ()
                     expect($circle.eq(i)).to.have.text(String(referenceSequence[i]))
                 }
             })
-
-
     })
 })
