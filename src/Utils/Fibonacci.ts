@@ -7,4 +7,4 @@ export const getNumbers = (count: number) => {
         fibonacciStartingNumbers.push(firstNumber + nextNumber)
     }
     return fibonacciStartingNumbers
-}
+};

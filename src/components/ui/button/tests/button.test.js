@@ -9,55 +9,54 @@ describe('Button component testing', () => {
             .create(<Button text={'text'}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('Button without text works correctly', () => {
         const btn = TestRenderer
             .create(<Button />)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('Button with ascending sorting works correctly', () => {
         const btn = TestRenderer
             .create(<Button sorting={Direction.Ascending}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('Button with descending sorting works correctly', () => {
         const btn = TestRenderer
             .create(<Button sorting={Direction.Descending}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('small size Button works correctly', () => {
         const btn = TestRenderer
             .create(<Button linkedList={'small'}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('big size Button works correctly', () => {
         const btn = TestRenderer
             .create(<Button linkedList={'big'}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('loader Button works correctly', () => {
         const btn = TestRenderer
             .create(<Button isLoader={true}/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
+    });
 
     it('disabled Button works correctly', () => {
         const btn = TestRenderer
             .create(<Button disabled/>)
             .toJSON()
         expect(btn).toMatchSnapshot()
-    })
-
+    });
 })

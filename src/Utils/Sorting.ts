@@ -10,7 +10,7 @@ export const testingSelectionSort = (arr: TSorrtArray[]) => {
         maxIndex !== i && swapArray(arr, i, maxIndex)
     }
     return arr
-}
+};
 
 export const testingBubbleSort = (arr: TSorrtArray[]) => {
     for (let i = 0; i < arr.length; i++) {
@@ -24,4 +24,4 @@ export const testingBubbleSort = (arr: TSorrtArray[]) => {
         }
     }
     return arr
-}
+};
