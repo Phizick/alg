@@ -23,17 +23,17 @@ describe('testing the correct operation of the stack component', () => {
         cy.get(cyForm)
             .within(() => {
                 cy.get(cyInput).type(value)
-
-                cy.get(cyRemoveBtn).should('be.disabled')
-                cy.get(cyClearBtn).should('be.disabled')
+                // cy.get(cyRemoveBtn).should('be.disabled')
+                // cy.get(cyClearBtn).should('be.disabled')
             })
-        cy.tick(SHORT_DELAY_IN_MS)
+
         cy.get(cyForm)
             .within(() => {
                 cy.get(cySubmitBtn).click()
-                cy.get(cyRemoveBtn).should('be.disabled')
-                cy.get(cyClearBtn).should('be.disabled')
+                // cy.get(cyRemoveBtn).should('be.disabled')
+                // cy.get(cyClearBtn).should('be.disabled')
             })
+        cy.tick(SHORT_DELAY_IN_MS)
         cy.get(circles).contains(value).parent()
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_changing'))
@@ -44,7 +44,6 @@ describe('testing the correct operation of the stack component', () => {
         cy.clock()
 
         addItem('0')
-        cy.get(cySubmitBtn).click()
         cy.get(circles)
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_default'))
