@@ -1,49 +1,49 @@
 import {
-    cyForm,
-    cyListInput,
-    cyIndexRemoveBtn,
-    cyListIndexInput,
-    cyHeadAddBtn,
-    cyIndexAddBtn,
-    cyHeadRemoveBtn,
-    cyTailAddBtn,
-    cyTailRemoveBtn,
-    circles,
-    cyCircleHead,
-    cyCircleTail
+    CY_FORM,
+    CY_LIST_INPUT,
+    CY_INDEX_REMOVE_BTN,
+    CY_LIST_INDEX_INPUT,
+    CY_HEAD_ADD_BTN,
+    CY_INDEX_ADD_BTN,
+    CY_HEAD_REMOVE_BTN,
+    CY_TAIL_ADD_BTN,
+    CY_TAIL_REMOVE_BTN,
+    CIRCLES,
+    CY_CIRCLE_HEAD,
+    CY_CIRCLE_TAIL
 } from "../../cyConst/cyConst";
 import {DELAY_IN_MS, SHORT_DELAY_IN_MS} from "../../../src/constants/delays";
 
 describe('testing the correct operation of the list component', () => {
 
     beforeEach(() => {
-        cy.visit('http://localhost:3000/list')
+        cy.visit('/list')
     });
 
     it('inaccessibility of the submit button when the input value is empty', () => {
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cyListInput).should('have.value', '');
-                cy.get(cyHeadAddBtn).should('be.disabled');
-                cy.get(cyTailAddBtn).should('be.disabled');
+                cy.get(CY_LIST_INPUT).should('have.value', '');
+                cy.get(CY_HEAD_ADD_BTN).should('be.disabled');
+                cy.get(CY_TAIL_ADD_BTN).should('be.disabled');
             });
     });
 
     it('checking the rendering of the default list', () => {
-        cy.get(circles).should('have.length', 4)
+        cy.get(CIRCLES).should('have.length', 4)
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_default'))
-        cy.get(cyCircleHead)
+        cy.get(CY_CIRCLE_HEAD)
             .first()
             .should($div => {
                 expect($div).to.have.text('head')
             });
-        cy.get(cyCircleTail)
+        cy.get(CY_CIRCLE_TAIL)
             .eq(3)
             .should($div => {
                 expect($div).to.have.text('tail')
             });
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '0');
             cy.get(item[1])
@@ -57,11 +57,11 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('checking the correct addition of the item to the head', () => {
-        cy.get(cyListInput).type('0');
-        cy.get(cyHeadAddBtn).click();
+        cy.get(CY_LIST_INPUT).type('0');
+        cy.get(CY_HEAD_ADD_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '0')
             cy.get(item[0])
@@ -72,11 +72,11 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('checking the correct addition of the item to the tail', () => {
-        cy.get(cyListInput).type('9');
-        cy.get(cyTailAddBtn).click();
+        cy.get(CY_LIST_INPUT).type('9');
+        cy.get(CY_TAIL_ADD_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[4])
                 .children().should('have.text', '9')
             cy.get(item[4])
@@ -87,10 +87,10 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('checking correct removal of the item from the head', () => {
-        cy.get(cyHeadRemoveBtn).click();
+        cy.get(CY_HEAD_REMOVE_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '34')
             cy.get(item[1])
@@ -102,10 +102,10 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('checking correct removal of the item from the tail', () => {
-        cy.get(cyTailRemoveBtn).click();
+        cy.get(CY_TAIL_REMOVE_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '0')
             cy.get(item[1])
@@ -117,12 +117,12 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('check for adding an item by index', () => {
-        cy.get(cyListIndexInput).type(2);
-        cy.get(cyListInput).type('4');
-        cy.get(cyIndexAddBtn).click();
+        cy.get(CY_LIST_INDEX_INPUT).type(2);
+        cy.get(CY_LIST_INPUT).type('4');
+        cy.get(CY_INDEX_ADD_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '4')
             cy.get(item[0])
@@ -142,11 +142,11 @@ describe('testing the correct operation of the list component', () => {
     });
 
     it('check for removing an item by index', () => {
-        cy.get(cyListIndexInput).type(2);
-        cy.get(cyIndexRemoveBtn).click();
+        cy.get(CY_LIST_INDEX_INPUT).type(2);
+        cy.get(CY_INDEX_REMOVE_BTN).click();
 
         cy.wait(Number(SHORT_DELAY_IN_MS));
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .children().should('have.text', '0')
             cy.get(item[0])

@@ -1,34 +1,34 @@
 
-import {cyForm, cyInput, cySubmitBtn, circles, cyClearBtn, cyRemoveBtn} from "../../cyConst/cyConst";
+import {CY_FORM, CY_INPUT, CY_SUBMIT_BTN, CIRCLES, CY_CLEAR_BTN, CY_REMOVE_BTN} from "../../cyConst/cyConst";
 import {SHORT_DELAY_IN_MS} from "../../../src/constants/delays";
 
 describe('testing the correct operation of the stack component', () => {
 
     beforeEach(() => {
-        cy.visit('http://localhost:3000/stack')
+        cy.visit('/stack')
     });
 
     it('inaccessibility of the submit button when the input value is empty', () => {
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cyInput).should('have.value', '');
-                cy.get(cySubmitBtn).should('be.disabled');
+                cy.get(CY_INPUT).should('have.value', '');
+                cy.get(CY_SUBMIT_BTN).should('be.disabled');
             })
     });
 
     const addItem = (value) => {
         cy.clock();
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cyInput).type(value)
+                cy.get(CY_INPUT).type(value)
                 cy.wait(Number(SHORT_DELAY_IN_MS))
             });
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cySubmitBtn).click()
+                cy.get(CY_SUBMIT_BTN).click()
             });
         cy.tick(SHORT_DELAY_IN_MS);
-        cy.get(circles).contains(value).parent()
+        cy.get(CIRCLES).contains(value).parent()
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_changing'))
         cy.tick(SHORT_DELAY_IN_MS);
@@ -37,12 +37,12 @@ describe('testing the correct operation of the stack component', () => {
     it('check for adding items to the stack', () => {
         cy.clock();
         addItem('0');
-        cy.get(circles)
+        cy.get(CIRCLES)
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_default'))
 
         addItem('1');
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_default'))
@@ -56,7 +56,7 @@ describe('testing the correct operation of the stack component', () => {
         });
 
         addItem('2');
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_default'))
@@ -81,9 +81,9 @@ describe('testing the correct operation of the stack component', () => {
         cy.tick(SHORT_DELAY_IN_MS);
         addItem('2');
         cy.tick(SHORT_DELAY_IN_MS);
-        cy.get(cyRemoveBtn).click();
+        cy.get(CY_REMOVE_BTN).click();
         cy.tick(SHORT_DELAY_IN_MS);
-        cy.get(circles).then(item => {
+        cy.get(CIRCLES).then(item => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_default'));
@@ -98,8 +98,8 @@ describe('testing the correct operation of the stack component', () => {
         cy.tick(SHORT_DELAY_IN_MS);
         addItem('2');
         cy.tick(SHORT_DELAY_IN_MS);
-        cy.get(cyClearBtn).click();
+        cy.get(CY_CLEAR_BTN).click();
         cy.tick(SHORT_DELAY_IN_MS);
-        cy.get(circles).should('have.length', 0);
+        cy.get(CIRCLES).should('have.length', 0);
     });
 })

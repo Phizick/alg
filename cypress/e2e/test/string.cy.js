@@ -1,29 +1,29 @@
 import {DELAY_IN_MS} from "../../../src/constants/delays";
-import {cyInput, cySubmitBtn, cyForm, circles} from '../../cyConst/cyConst'
+import {CY_INPUT, CY_SUBMIT_BTN, CY_FORM, CIRCLES} from '../../cyConst/cyConst'
 
 
 describe('testing the correct operation of the sting reversal component', () => {
 
     beforeEach(() => {
-        cy.visit('http://localhost:3000/recursion')
+        cy.visit('/recursion')
     });
 
     it('inaccessibility of the submit button when the input value is empty', () => {
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cyInput).should('have.value', '');
-                cy.get(cySubmitBtn).should('be.disabled');
+                cy.get(CY_INPUT).should('have.value', '');
+                cy.get(CY_SUBMIT_BTN).should('be.disabled');
             });
     });
 
     it('checking correct string reversal',  () => {
         cy.clock();
-        cy.get(cyForm)
+        cy.get(CY_FORM)
             .within(() => {
-                cy.get(cyInput).type('test');
-                cy.get(cySubmitBtn).click();
+                cy.get(CY_INPUT).type('test');
+                cy.get(CY_SUBMIT_BTN).click();
             });
-        cy.get(circles).then((item) => {
+        cy.get(CIRCLES).then((item) => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_changing'));
@@ -48,7 +48,7 @@ describe('testing the correct operation of the sting reversal component', () => 
 
         cy.tick(DELAY_IN_MS);
 
-        cy.get(circles).then((item) => {
+        cy.get(CIRCLES).then((item) => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_modified'));
@@ -73,7 +73,7 @@ describe('testing the correct operation of the sting reversal component', () => 
 
         cy.tick(DELAY_IN_MS);
 
-        cy.get(circles).then((item) => {
+        cy.get(CIRCLES).then((item) => {
             cy.get(item[0])
                 .invoke('attr', 'class')
                 .then(classList => expect(classList).contains('circle_modified'));
