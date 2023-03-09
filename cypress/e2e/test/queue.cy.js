@@ -133,8 +133,26 @@ describe('testing the correct operation of the queue component', () => {
             .invoke('attr', 'class')
             .then(classList => expect(classList).contains('circle_default'))
 
+    })
 
+    it('queue cleanup check', () => {
 
+        cy.get(cyInput).type('0')
+        cy.get(cySubmitBtn).click()
+        cy.wait(SHORT_DELAY_IN_MS)
+        cy.get(cyInput).type('1')
+        cy.get(cySubmitBtn).click()
+        cy.wait(SHORT_DELAY_IN_MS)
+        cy.get(cyInput).type('2')
+        cy.get(cySubmitBtn).click()
+
+        cy.get(cyClearBtn).click()
+        cy.wait(SHORT_DELAY_IN_MS)
+
+        cy.get(circles).each($item => {
+            expect($item).to.have.text('')
+            expect($item).to.have.attr('class').contains('circle_default')
+        })
     })
 
 
