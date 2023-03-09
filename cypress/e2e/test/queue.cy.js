@@ -1,4 +1,16 @@
-import {cyForm, cyInput, cySubmitBtn, cyClearBtn, cyRemoveBtn, cyCircleHead, cyCircleTail} from "../../cyConst/cyConst";
+import {
+    cyForm,
+    cyInput,
+    cySubmitBtn,
+    cyClearBtn,
+    cyRemoveBtn,
+    cyCircleHead,
+    cyCircleTail,
+    circles
+} from "../../cyConst/cyConst";
+import {SHORT_DELAY_IN_MS} from "../../../src/constants/delays";
+
+
 
 describe('testing the correct operation of the queue component', () => {
 
@@ -18,7 +30,73 @@ describe('testing the correct operation of the queue component', () => {
 
     it('check for adding items to the queue', () => {
 
+        cy.get(cyInput).type('0')
+        cy.get(cySubmitBtn).click()
+        cy.wait(SHORT_DELAY_IN_MS)
+
+        cy.get(cyCircleHead).should($div => {
+            expect($div).to.have.text('head')
+        })
+
+        cy.get(cyCircleTail).should($div => {
+            expect($div).to.have.text('tail')
+        })
+
+        cy.wait(SHORT_DELAY_IN_MS)
+
+        cy.get(cyInput).type('1')
+        cy.get(cySubmitBtn).click()
+        cy.get(cyCircleHead)
+            .first()
+            .should($div => {
+                expect($div).to.have.text('head')
+            })
+        cy.get(circles).contains('1').parent()
+            .invoke('attr', 'class')
+            .then(classList => expect(classList).contains('circle_changing'))
+
+        cy.get(cyCircleTail)
+            .eq(1)
+            .should($div => {
+            expect($div).to.have.text('tail')
+        })
+
+        cy.get(circles).contains('0').parent()
+            .invoke('attr', 'class')
+            .then(classList => expect(classList).contains('circle_default'))
+
+        cy.wait(SHORT_DELAY_IN_MS)
+
+        cy.get(cyInput).type('2')
+        cy.get(cySubmitBtn).click()
+        cy.get(cyCircleHead)
+            .first()
+            .should($div => {
+                expect($div).to.have.text('head')
+            })
+        cy.get(circles).contains('2').parent()
+            .invoke('attr', 'class')
+            .then(classList => expect(classList).contains('circle_changing'))
+
+        cy.get(cyCircleTail)
+            .eq(2)
+            .should($div => {
+                expect($div).to.have.text('tail')
+            })
+
+        cy.get(circles).contains('1').parent()
+            .invoke('attr', 'class')
+            .then(classList => expect(classList).contains('circle_default'))
+
+
+
     })
+
+    it('check for remove items to the queue', () => {
+
+
+    })
+
 
 
 })
