@@ -26,7 +26,7 @@ export const StringComponent: FC = () => {
         const startingArr = item.split('')
         setIndex( 0)
         setArr([...startingArr])
-        await delay(SHORT_DELAY_IN_MS)
+        await delay(DELAY_IN_MS)
         for (let i = 0; i < Math.floor(startingArr.length / 2); i++) {
             swapString(startingArr, i, startingArr.length - 1)
             setIndex((i: number) => i + 1)
@@ -46,26 +46,28 @@ export const StringComponent: FC = () => {
 
     return (
         <SolutionLayout title="Строка">
-            <form onSubmit={startingSort} className={`${stylesStringPage.form}`}>
+            <form onSubmit={startingSort} className={`${stylesStringPage.form}`} data-cy={'form'}>
                 <div className={`${stylesStringPage.container}`}>
                     <Input placeholder={"Введите текст"}
                            extraClass={"input-style"}
                            isLimitText={true} maxLength={11}
                            onChange={handleChange}
                            value={inputLetters || ""}
+                           data-cy={'input'}
                     />
                     <Button text={"Развернуть"}
                             extraClass={"button-style"}
                             onClick={startingSort}
                             isLoader={loader}
                             disabled={!inputLetters}
+                            data-cy={'submit'}
                     />
                 </div>
                 <ul className={`${stylesStringPage.ul}`}>
                     {reversedArr &&
                         reversedArr?.map((item, index: number) => {
                             return (
-                                <li className={`${stylesStringPage.li}`} key={index}>
+                                <li className={`${stylesStringPage.circles}`} key={index} data-cy={'circles'}>
                                     <Circle letter={item}
                                             index={index + 1}
                                             state={setCircle(currentIndex, index, reversedArr)}

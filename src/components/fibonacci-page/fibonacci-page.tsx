@@ -52,7 +52,7 @@ export const FibonacciPage: FC = () => {
 
     return (
         <SolutionLayout title="Последовательность Фибоначчи">
-            <form className={`${stylesFiboPage.container}`} onSubmit={handleClick}>
+            <form className={`${stylesFiboPage.container}`} onSubmit={handleClick} data-cy={'form'}>
                 <div className={`${stylesFiboPage.input}`}>
                     <Input
                         placeholder={"Введите число"}
@@ -62,6 +62,8 @@ export const FibonacciPage: FC = () => {
                         onChange={onChange}
                         value={values.inputValue || ""}
                         max={19}
+                        data-cy={'input'}
+
                     />
                     <Button
                         text={"Рассчитать"}
@@ -69,6 +71,7 @@ export const FibonacciPage: FC = () => {
                         onClick={handleClick}
                         isLoader={values.loader}
                         disabled={limitedInputValues}
+                        data-cy={'submit'}
                     />
                 </div>
                 <ul className={`${stylesFiboPage.ul}`}>

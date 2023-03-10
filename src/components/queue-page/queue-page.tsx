@@ -76,7 +76,7 @@ export const QueuePage: FC = () => {
 
     return (
         <SolutionLayout title="Очередь">
-            <form className={`${stylesQueuePage.container}`}>
+            <form className={`${stylesQueuePage.container}`} data-cy={'form'}>
                 <div className={`${stylesQueuePage.buttons}`}>
                     <Input
                         placeholder={'Введите текст'}
@@ -86,28 +86,32 @@ export const QueuePage: FC = () => {
                         max={'4'}
                         onChange={onChange}
                         value={values.inputValues || ''}
+                        data-cy={'input'}
                     />
                     <Button text={'Добавить'}
                             onClick={() => getEnqueue(values.inputValues)}
                             disabled={!availableLength}
                             isLoader={addLoader}
+                            data-cy={'submit'}
                     />
                     <Button text={'Удалить'}
                             onClick={() => getDequeue()}
                             disabled={!Boolean(clearedArray)}
                             isLoader={delLoader}
+                            data-cy={'remove'}
                     />
                 </div>
                 <Button text={'Очистить'}
                         onClick={() => clear()}
                         disabled={!Boolean(clearedArray)}
+                        data-cy={'clear'}
                 />
             </form>
             <ul className={`${stylesQueuePage.ul}`}>
                 {queueArray
                     .map((item, index: number) => {
                         return (
-                            <li className={`${stylesQueuePage.li}`} key={index}>
+                            <li className={`${stylesQueuePage.li}`} key={index} data-cy={'circles'}>
                             <Circle key={index}
                                     letter={item}
                                     index={index}
